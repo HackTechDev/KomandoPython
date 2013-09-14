@@ -27,6 +27,20 @@ class Wall(pygame.sprite.Sprite):
         self.rect.y = y
         self.rect.x = x
 
+# This class represents the bullet
+class Bullet(pygame.sprite.Sprite):
+
+    def __init__(self):
+        # Call the parent class (Sprite) constructor
+        pygame.sprite.Sprite.__init__(self)
+
+        self.image = pygame.Surface([4, 10])
+        self.image.fill(white)
+
+        self.rect = self.image.get_rect()
+
+
+
 class Player(pygame.sprite.Sprite):
 
     # Set speed vector
@@ -72,7 +86,6 @@ class Player(pygame.sprite.Sprite):
             # Whoops, hit a wall. Go back to the old position
             self.rect.y=old_y
 
-score = 0
 # Call this function so the Pygame library can initialize itself
 pygame.init()
 
@@ -93,26 +106,29 @@ movingsprites = pygame.sprite.RenderPlain()
 movingsprites.add(player)
 
 # Make the walls. (x_pos, y_pos, width, height)
-wall_list=pygame.sprite.RenderPlain()
+all_sprites_list=pygame.sprite.RenderPlain()
 
 # List of each block in the game
 block_list = pygame.sprite.RenderPlain()
 
+# List of each bullet
+bullet_list = pygame.sprite.RenderPlain()
+
 # Left Wall
 wall=Wall(0,0,20,600)
-wall_list.add(wall)
+all_sprites_list.add(wall)
 
 # Right Wall
 wall=Wall(780,20,20,580)
-wall_list.add(wall)
+all_sprites_list.add(wall)
 
 # Top Wall
 wall=Wall(20,0,780,20)
-wall_list.add(wall)
+all_sprites_list.add(wall)
 
 # Bottom Wall
 wall=Wall(20,580,780,20)
-wall_list.add(wall)
+all_sprites_list.add(wall)
 
 for i in range(10):
     block = Block(red)
@@ -121,14 +137,22 @@ for i in range(10):
     block.rect.y = 20 + random.randrange(28) * 20
 
     block_list.add(block)
-    wall_list.add(block)
+    all_sprites_list.add(block)
 
 
 clock = pygame.time.Clock()
 
+# This is a font we use to draw text on the screen (size 36)
+font = pygame.font.Font(None, 36)
+
+
 done = False
 
 speed = 5
+
+score = 0
+
+ammunition = 20
 
 while done == False:
     
@@ -145,7 +169,16 @@ while done == False:
                 player.changespeed(0,-speed)
             if event.key == pygame.K_DOWN:
                 player.changespeed(0,speed)
-                
+            if event.key == pygame.K_SPACE:
+                if ammunition > 0 :
+                    bullet = Bullet()
+                    bullet.rect.x = player.rect.x
+                    bullet.rect.y = player.rect.y
+                    all_sprites_list.add(bullet)
+                    bullet_list.add(bullet)
+                    ammunition -=1
+
+
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:
                 player.changespeed(speed,0)
@@ -156,14 +189,46 @@ while done == False:
             if event.key == pygame.K_DOWN:
                 player.changespeed(0,-speed)
                 
-    player.update(wall_list)
+    player.update(all_sprites_list)
+
+    # Calculate mechanics for each bullet
+    for bullet in bullet_list:
+
+        # Move the bullet up 5 pixels
+        bullet.rect.y -= 5
+
+        # See if it hit a block
+        block_hit_list = pygame.sprite.spritecollide(bullet, block_list, True)
+
+        # For each block hit, remove the bollet and add to the score
+        for block in block_hit_list:
+            bullet_list.remove(bullet)
+            all_sprites_list.remove(bullet)
+            score += 1
+
+        # Remove the bullet if it flies up off the screen
+        if bullet.rect.y < -10:
+            bullet_list.remove(bullet)
+            all_sprites_list.remove(bullet)
+
+
+
     
     screen.fill(black)
     
     movingsprites.draw(screen)
-    wall_list.draw(screen)
-    block_list.draw(screen)
+
+    all_sprites_list.draw(screen)
+
+    textScore=font.render("Score : "+str(score), True, blue)
+    screen.blit(textScore, [20, 20])
+
+    textAmmunition=font.render("Ammunition : "+str(ammunition), True, blue)
+    screen.blit(textAmmunition, [20, 40])
+
+
     pygame.display.flip()
+
 
     clock.tick(40)
             
