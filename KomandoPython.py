@@ -6,10 +6,8 @@ white = (255,255,255)
 blue = (0,0,255)
 red = (255,0,0)
 
-# This class represents the block
 class Block(pygame.sprite.Sprite):
     def __init__(self, color):
-        # Call the parent class (Sprite) constructor
         pygame.sprite.Sprite.__init__(self)
 
         self.image = pygame.Surface([20, 20])
@@ -17,16 +15,10 @@ class Block(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
 
-
-
-# This class represents the bar at the bottom that the player controls
 class Wall(pygame.sprite.Sprite):
-    # Constructor function
     def __init__(self,x,y,width,height):
-        # Call the parent's constructor
         pygame.sprite.Sprite.__init__(self)
 
-        # Make a blue wall, of the size specified in the parameters
         self.image = pygame.Surface([width, height])
         self.image.fill(blue)
 
@@ -35,22 +27,15 @@ class Wall(pygame.sprite.Sprite):
         self.rect.y = y
         self.rect.x = x
 
-
-        
-        
-# This class represents the bar at the bottom that the player controls
 class Player(pygame.sprite.Sprite):
 
     # Set speed vector
     change_x=0
     change_y=0
 
-    # Constructor function
     def __init__(self,x,y):
-        # Call the parent's constructor
         pygame.sprite.Sprite.__init__(self)
  
-        # Set height, width
         self.image = pygame.Surface([20, 20])
         self.image.fill(white)
 
@@ -91,26 +76,18 @@ score = 0
 # Call this function so the Pygame library can initialize itself
 pygame.init()
 
-# Create an 800x600 sized screen
-# Set the height and width of the screen
 screen_width=800
 screen_height=600
 screen=pygame.display.set_mode([screen_width,screen_height])
 
-
-# Set the title of the window
 pygame.display.set_caption('Komando Python')
 
-# Create a surface we can draw on
 background = pygame.Surface(screen.get_size())
 
-# Used for converting color maps and such
 background = background.convert()
 
-# Fill the screen with a black background
 background.fill(black)
 
-# Create the player paddle object
 player = Player( 20,20 )
 movingsprites = pygame.sprite.RenderPlain()
 movingsprites.add(player)
@@ -138,14 +115,11 @@ wall=Wall(20,580,780,20)
 wall_list.add(wall)
 
 for i in range(10):
-    # This represents a block
     block = Block(red)
 
-    # Set a random location for the block
     block.rect.x = 20 + random.randrange(38) * 20  
     block.rect.y = 20 + random.randrange(28) * 20
 
-    # Add the block to the list of objects
     block_list.add(block)
     wall_list.add(block)
 
