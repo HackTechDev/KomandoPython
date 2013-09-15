@@ -57,6 +57,10 @@ class Player(pygame.sprite.Sprite):
     change_x=0
     change_y=0
 
+    # This is a frame counter used to determing which image to draw
+    frame = 0
+
+
     def __init__(self,x,y):
         pygame.sprite.Sprite.__init__(self)
  
@@ -99,8 +103,10 @@ class Player(pygame.sprite.Sprite):
 # Call this function so the Pygame library can initialize itself
 pygame.init()
 
-screen_width=800
-screen_height=600
+# 48*25
+screen_width=1200
+# 64*12
+screen_height=640
 screen=pygame.display.set_mode([screen_width,screen_height])
 
 pygame.display.set_caption('Komando Python')
