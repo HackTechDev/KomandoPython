@@ -6,6 +6,51 @@ white = (255,255,255)
 blue = (0,0,255)
 red = (255,0,0)
 
+class GraphicSprite(pygame.sprite.Sprite):
+
+    def setGraphic(self,tilex,tiley,tilewidth,tileheight,x,y,width,height):
+        myimage = pygame.image.load("sprites/wall/int_wall_bricks.png").convert()
+
+        # Make a blue wall, of the size specified in the parameters
+        self.image = pygame.Surface([width, height])
+
+        for row in range(height//tileheight+1):
+            for column in range(width//tilewidth+1):
+                self.image.blit(myimage,(column*tilewidth,row*tileheight),(tilex,tiley,tilewidth,tileheight))
+
+        # Make our top-left corner the passed-in location.
+        self.rect = self.image.get_rect()
+        self.rect.y = y
+        self.rect.x = x
+        self.image.set_colorkey(black)
+
+    def setGraphic2(self,image, tilex,tiley,x,y,width,height):
+        myimage = pygame.image.load(image).convert()
+
+        self.image = pygame.Surface([width, height])
+
+        self.image.blit(myimage,(0,0),(tilex,tiley,32,32))
+        for column in range(width//32-2):
+            self.image.blit(myimage,((column+1)*32,0),(tilex+32,tiley,32,32))
+        self.image.blit(myimage,( (width//32-1)*32,0),(tilex+64,tiley,32,32))
+
+        for row in range(height//32+1):
+            self.image.blit(myimage,(0,(row+1)*32),(tilex,tiley+32,32,32))
+            for column in range(width//32+1):
+                self.image.blit(myimage,((column+1)*32,(row+1)*32),(tilex+32,tiley+32,32,32))
+            self.image.blit(myimage,((width//32-1)*32,(row+1)*32),(tilex+64,tiley+32,32,32))
+
+        self.image.blit(myimage,(0,(height//32-1)*32),(tilex,tiley+64,32,32))
+        for column in range(width//32-2):
+            self.image.blit(myimage,((column+1)*32,(height//32-1)*32),(tilex+32,tiley+64,32,32))
+        self.image.blit(myimage,( (width//32-1)*32,(height//32-1)*32),(tilex+64,tiley+64,32,32))
+
+        # Make our top-left corner the passed-in location.
+        self.rect = self.image.get_rect()
+        self.rect.y = y
+        self.rect.x = x
+        self.image.set_colorkey(black)
+
 class Block(pygame.sprite.Sprite):
     def __init__(self, color):
         pygame.sprite.Sprite.__init__(self)
@@ -15,17 +60,27 @@ class Block(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
 
-class Wall(pygame.sprite.Sprite):
+class Wall(GraphicSprite):
     def __init__(self,x,y,width,height):
         pygame.sprite.Sprite.__init__(self)
+        image = "sprites/wall/int_wall_bricks.png"
+        tilex=32*1
+        tiley=32*1
+        x = x*32
+        y = y*32
+        self.setGraphic2(image, tilex,tiley,x,y,width,height)
 
-        self.image = pygame.Surface([width, height])
-        self.image.fill(blue)
+class Ground(GraphicSprite):
+    def __init__(self,x,y,width,height):
+        pygame.sprite.Sprite.__init__(self)
+        image = "sprites/ground/brown_paving.png"
+        tilex=32*0
+        tiley=32*0
+        x = x*32
+        y = y*32
+        self.setGraphic2(image, tilex,tiley,x,y,width,height)
 
-        # Make our top-left corner the passed-in location.
-        self.rect = self.image.get_rect()
-        self.rect.y = y
-        self.rect.x = x
+
 
 class BulletVertical(pygame.sprite.Sprite):
     def __init__(self):
@@ -66,7 +121,7 @@ class Player(pygame.sprite.Sprite):
 
         # Number of sprite + 1 = 13
         for i in range(1,13):
-            img = pygame.image.load("sprites/player/player"+str(i)+".png").convert()
+            img = pygame.image.load("sprites/player/player"+str(i)+".png").convert_alpha()
             img.set_colorkey(white)
             self.images.append(img)
 
@@ -77,19 +132,19 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.y = y
         self.rect.x = x
-    
+
     # Change the speed of the player
     def changespeed(self,x,y):
         self.change_x+=x
         self.change_y+=y
-        
+
     # Find a new position for the player
     def update(self,walls):
         # Get the old position, in case we need to go back to it
         old_x=self.rect.x
         new_x=old_x+self.change_x
         self.rect.x = new_x
- 
+
         # Did this update cause us to hit a wall?
         collide = pygame.sprite.spritecollide(self, walls, False)
         if collide:
@@ -99,7 +154,7 @@ class Player(pygame.sprite.Sprite):
         old_y=self.rect.y
         new_y=old_y+self.change_y
         self.rect.y = new_y
-        
+
         # Did this update cause us to hit a wall?
         collide = pygame.sprite.spritecollide(self, walls, False)
         if collide:
@@ -130,20 +185,20 @@ class Player(pygame.sprite.Sprite):
             if self.frame > 2*3:
                 self.frame = 0
             self.image = self.images[self.frame//3+3]
- 
+
         # Move bottom to top
         if self.change_y > 0:
             self.frame += 1
             if self.frame > 2*3:
                 self.frame = 0
             self.image = self.images[self.frame//3+3+3]
- 
+
         if self.change_x < 0:
             self.frame += 1
             if self.frame > 2*3:
                 self.frame = 0
             self.image = self.images[self.frame//3+3+3+3]
- 
+
 # Call this function so the Pygame library can initialize itself
 pygame.init()
 
@@ -174,27 +229,52 @@ block_list = pygame.sprite.RenderPlain()
 # List of each bullet
 bullet_list = pygame.sprite.RenderPlain()
 
-# Left Wall
-wall=Wall(0,0,32,32*16)
-all_sprites_list.add(wall)
+ground_list = pygame.sprite.RenderPlain()
 
-# Right Wall
-wall=Wall(32*30,32,32,32*15)
-all_sprites_list.add(wall)
+
+for x in range(30):
+    for y in range(15):
+        ground = Ground(x, y, 32, 32)
+        ground_list.add(ground)
+
 
 # Top Wall
-wall=Wall(32,0,32*30,32)
-all_sprites_list.add(wall)
+posx = 0
+posy = 0
+lengthx = 30
+for x in range(lengthx):
+    wall=Wall(posx+x,posy,32,32)
+    all_sprites_list.add(wall)
+
+# Left Wall
+posx = 0
+posy = 1
+lengthx = 14
+for x in range(lengthx):
+    wall=Wall(posx,posy+x,32,32)
+    all_sprites_list.add(wall)
 
 # Bottom Wall
-wall=Wall(32,32*15,32*30,32)
-all_sprites_list.add(wall)
+posx = 0
+posy = 15
+lengthx = 30
+for x in range(lengthx):
+    wall=Wall(posx+x,posy,32,32)
+    all_sprites_list.add(wall)
+
+# Left Wall
+posx = 29
+posy = 1
+lengthx = 14
+for x in range(lengthx):
+    wall=Wall(posx,posy+x,32,32)
+    all_sprites_list.add(wall)
 
 for i in range(10):
     block = Block(red)
 
-    block.rect.x = 32 + random.randrange(30) * 32  
-    block.rect.y = 32 + random.randrange(15) * 32
+    block.rect.x = 32 + random.randrange(28) * 32
+    block.rect.y = 32 + random.randrange(14) * 32
 
     block_list.add(block)
     all_sprites_list.add(block)
@@ -214,7 +294,7 @@ ammunition = 20
 direction = 8
 
 while done == False:
-    
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done=True
@@ -279,7 +359,7 @@ while done == False:
                 bullet.rect.x += 5
             if bullet.direction == 4:
                 bullet.rect.x -= 5
-        
+
         # See if it hit a block
         block_hit_list = pygame.sprite.spritecollide(bullet, block_list, True)
 
@@ -290,11 +370,13 @@ while done == False:
             score += 1
 
         # Remove the bullet if it flies up off the screen
-        if bullet.rect.x > (30*32) or bullet.rect.x < (1*32) or bullet.rect.y > (15*32) or bullet.rect.y < (1*32):
+        if bullet.rect.x > (29*32) or bullet.rect.x < (1*32) or bullet.rect.y > (15*32) or bullet.rect.y < (1*32):
             bullet_list.remove(bullet)
             all_sprites_list.remove(bullet)
 
     screen.fill(black)
+
+    ground_list.draw(screen)
 
     movingsprites.draw(screen)
 
