@@ -10,7 +10,7 @@ class Block(pygame.sprite.Sprite):
     def __init__(self, color):
         pygame.sprite.Sprite.__init__(self)
 
-        self.image = pygame.Surface([20, 20])
+        self.image = pygame.Surface([32, 32])
         self.image.fill(color)
 
         self.rect = self.image.get_rect()
@@ -49,7 +49,7 @@ class BulletHorizontal(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
 
-
+# Sprite size: width = 48 / height = 64
 
 class Player(pygame.sprite.Sprite):
 
@@ -60,12 +60,18 @@ class Player(pygame.sprite.Sprite):
     # This is a frame counter used to determing which image to draw
     frame = 0
 
-
     def __init__(self,x,y):
         pygame.sprite.Sprite.__init__(self)
- 
-        self.image = pygame.Surface([20, 20])
-        self.image.fill(white)
+        self.images=[]
+
+        # Number of sprite + 1 = 13
+        for i in range(1,13):
+            img = pygame.image.load("sprites/player/player"+str(i)+".png").convert()
+            img.set_colorkey(white)
+            self.images.append(img)
+
+        # By default, use image 0
+        self.image = self.images[0]
 
         # Make our top-left corner the passed-in location.
         self.rect = self.image.get_rect()
@@ -83,7 +89,7 @@ class Player(pygame.sprite.Sprite):
         old_x=self.rect.x
         new_x=old_x+self.change_x
         self.rect.x = new_x
-        
+ 
         # Did this update cause us to hit a wall?
         collide = pygame.sprite.spritecollide(self, walls, False)
         if collide:
@@ -100,6 +106,44 @@ class Player(pygame.sprite.Sprite):
             # Whoops, hit a wall. Go back to the old position
             self.rect.y=old_y
 
+        # Moving right to left
+        if self.change_y < 0:
+            self.frame += 1
+
+            # We go from 0...3. If we are above image 3, reset to 0
+            # Multiply by 4 because we flip the image every 4 frames
+            if self.frame > 2*3:
+                self.frame = 0
+
+            # Grab the image, do floor division by 4 because we flip
+            # every 4 frames.
+            # Frames 0...3 -> image[0]
+            # Frames 4...7 -> image[1]
+            # etc.
+            self.image = self.images[self.frame//3]
+
+        # Move left to right. About the same as before, but use
+        # images 4...7 instead of 0...3. Note that we add 4 in the last
+        # line to do this.
+        if self.change_x > 0:
+            self.frame += 1
+            if self.frame > 2*3:
+                self.frame = 0
+            self.image = self.images[self.frame//3+3]
+ 
+        # Move bottom to top
+        if self.change_y > 0:
+            self.frame += 1
+            if self.frame > 2*3:
+                self.frame = 0
+            self.image = self.images[self.frame//3+3+3]
+ 
+        if self.change_x < 0:
+            self.frame += 1
+            if self.frame > 2*3:
+                self.frame = 0
+            self.image = self.images[self.frame//3+3+3+3]
+ 
 # Call this function so the Pygame library can initialize itself
 pygame.init()
 
@@ -117,7 +161,7 @@ background = background.convert()
 
 background.fill(black)
 
-player = Player(20, 100)
+player = Player(32, 64)
 movingsprites = pygame.sprite.RenderPlain()
 movingsprites.add(player)
 
@@ -131,26 +175,26 @@ block_list = pygame.sprite.RenderPlain()
 bullet_list = pygame.sprite.RenderPlain()
 
 # Left Wall
-wall=Wall(0,0,20,600)
+wall=Wall(0,0,32,32*16)
 all_sprites_list.add(wall)
 
 # Right Wall
-wall=Wall(780,20,20,580)
+wall=Wall(32*30,32,32,32*15)
 all_sprites_list.add(wall)
 
 # Top Wall
-wall=Wall(20,0,780,20)
+wall=Wall(32,0,32*30,32)
 all_sprites_list.add(wall)
 
 # Bottom Wall
-wall=Wall(20,580,780,20)
+wall=Wall(32,32*15,32*30,32)
 all_sprites_list.add(wall)
 
 for i in range(10):
     block = Block(red)
 
-    block.rect.x = 20 + random.randrange(38) * 20  
-    block.rect.y = 20 + random.randrange(28) * 20
+    block.rect.x = 32 + random.randrange(30) * 32  
+    block.rect.y = 32 + random.randrange(15) * 32
 
     block_list.add(block)
     all_sprites_list.add(block)
@@ -225,9 +269,6 @@ while done == False:
 
     # Calculate mechanics for each bullet
     for bullet in bullet_list:
-        print(bullet.name)            
-        print(bullet.direction)
-
         if bullet.name == "vertical" :
             if bullet.direction == 8:
                 bullet.rect.y -= 5
@@ -249,7 +290,7 @@ while done == False:
             score += 1
 
         # Remove the bullet if it flies up off the screen
-        if bullet.rect.y < -30 :
+        if bullet.rect.x > (30*32) or bullet.rect.x < (1*32) or bullet.rect.y > (15*32) or bullet.rect.y < (1*32):
             bullet_list.remove(bullet)
             all_sprites_list.remove(bullet)
 
@@ -260,10 +301,10 @@ while done == False:
     all_sprites_list.draw(screen)
 
     textScore=font.render("Score : "+str(score), True, blue)
-    screen.blit(textScore, [20, 20])
+    screen.blit(textScore, [0, 32*16])
 
     textAmmunition=font.render("Ammunition : "+str(ammunition), True, blue)
-    screen.blit(textAmmunition, [20, 40])
+    screen.blit(textAmmunition, [0, 32*17])
 
     pygame.display.flip()
 
