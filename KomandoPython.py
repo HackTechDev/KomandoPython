@@ -101,7 +101,7 @@ background = background.convert()
 
 background.fill(black)
 
-player = Player( 20,20 )
+player = Player(20, 100)
 movingsprites = pygame.sprite.RenderPlain()
 movingsprites.add(player)
 
@@ -139,12 +139,9 @@ for i in range(10):
     block_list.add(block)
     all_sprites_list.add(block)
 
-
 clock = pygame.time.Clock()
 
-# This is a font we use to draw text on the screen (size 36)
 font = pygame.font.Font(None, 36)
-
 
 done = False
 
@@ -153,6 +150,8 @@ speed = 5
 score = 0
 
 ammunition = 20
+
+direction = 8
 
 while done == False:
     
@@ -163,14 +162,18 @@ while done == False:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 player.changespeed(-speed,0)
+                direction = 4
             if event.key == pygame.K_RIGHT:
                 player.changespeed(speed,0)
+                direction = 6
             if event.key == pygame.K_UP:
                 player.changespeed(0,-speed)
+                direction = 8
             if event.key == pygame.K_DOWN:
                 player.changespeed(0,speed)
-            if event.key == pygame.K_SPACE:
-                if ammunition > 0 :
+                direction = 2
+            if event.key == pygame.K_SPACE :
+                if ammunition > 0 and direction == 8:
                     bullet = Bullet()
                     bullet.rect.x = player.rect.x
                     bullet.rect.y = player.rect.y
@@ -188,7 +191,7 @@ while done == False:
                 player.changespeed(0,speed)
             if event.key == pygame.K_DOWN:
                 player.changespeed(0,-speed)
-                
+
     player.update(all_sprites_list)
 
     # Calculate mechanics for each bullet
@@ -211,11 +214,8 @@ while done == False:
             bullet_list.remove(bullet)
             all_sprites_list.remove(bullet)
 
-
-
-    
     screen.fill(black)
-    
+
     movingsprites.draw(screen)
 
     all_sprites_list.draw(screen)
@@ -226,10 +226,8 @@ while done == False:
     textAmmunition=font.render("Ammunition : "+str(ammunition), True, blue)
     screen.blit(textAmmunition, [20, 40])
 
-
     pygame.display.flip()
 
-
     clock.tick(40)
-            
+
 pygame.quit()
