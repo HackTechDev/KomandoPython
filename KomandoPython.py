@@ -51,14 +51,17 @@ class GraphicSprite(pygame.sprite.Sprite):
         self.rect.x = x
         self.image.set_colorkey(black)
 
-class Block(pygame.sprite.Sprite):
-    def __init__(self, color):
+class Block(GraphicSprite):
+    def __init__(self, x,y,width,height):
         pygame.sprite.Sprite.__init__(self)
+        image = "sprites/item/toys.png"
+        tilex=32*0
+        tiley=32*0
+        x = x*32
+        y = y*32
+        self.setGraphic2(image, tilex,tiley,x,y,width,height)
 
-        self.image = pygame.Surface([32, 32])
-        self.image.fill(color)
 
-        self.rect = self.image.get_rect()
 
 class Wall(GraphicSprite):
     def __init__(self,x,y,width,height):
@@ -232,8 +235,8 @@ bullet_list = pygame.sprite.RenderPlain()
 ground_list = pygame.sprite.RenderPlain()
 
 
-for x in range(30):
-    for y in range(15):
+for x in range(1, 30):
+    for y in range(1, 15):
         ground = Ground(x, y, 32, 32)
         ground_list.add(ground)
 
@@ -271,10 +274,7 @@ for x in range(lengthx):
     all_sprites_list.add(wall)
 
 for i in range(10):
-    block = Block(red)
-
-    block.rect.x = 32 + random.randrange(28) * 32
-    block.rect.y = 32 + random.randrange(14) * 32
+    block = Block(1+random.randrange(28), 1+random.randrange(14), 32, 32)
 
     block_list.add(block)
     all_sprites_list.add(block)
