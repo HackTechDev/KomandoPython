@@ -6,6 +6,8 @@ white = (255,255,255)
 blue = (0,0,255)
 red = (255,0,0)
 
+
+
 class GraphicSprite(pygame.sprite.Sprite):
 
     def setGraphic(self,tilex,tiley,tilewidth,tileheight,x,y,width,height):
@@ -82,8 +84,6 @@ class Ground(GraphicSprite):
         x = x*32
         y = y*32
         self.setGraphic2(image, tilex,tiley,x,y,width,height)
-
-
 
 class BulletVertical(pygame.sprite.Sprite):
     def __init__(self):
@@ -202,6 +202,18 @@ class Player(pygame.sprite.Sprite):
                 self.frame = 0
             self.image = self.images[self.frame//3+3+3+3]
 
+class Level():
+    # Constructor function
+    def __init__(self, filename):
+        file = open("map01.txt", "r")
+        line_list = file.readlines()
+        file.close()
+
+        for line in line_list:
+            line = line[:-1]
+            print(line)
+            
+
 # Call this function so the Pygame library can initialize itself
 pygame.init()
 
@@ -222,6 +234,9 @@ background.fill(black)
 player = Player(32, 64)
 movingsprites = pygame.sprite.RenderPlain()
 movingsprites.add(player)
+
+# Load level
+map1 = Level("map01.txt")
 
 # Make the walls. (x_pos, y_pos, width, height)
 all_sprites_list=pygame.sprite.RenderPlain()
