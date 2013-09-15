@@ -27,14 +27,24 @@ class Wall(pygame.sprite.Sprite):
         self.rect.y = y
         self.rect.x = x
 
-# This class represents the bullet
-class Bullet(pygame.sprite.Sprite):
-
+class BulletVertical(pygame.sprite.Sprite):
     def __init__(self):
-        # Call the parent class (Sprite) constructor
         pygame.sprite.Sprite.__init__(self)
 
+        self.name = "vertical"
+        self.direction = 0
         self.image = pygame.Surface([4, 10])
+        self.image.fill(white)
+
+        self.rect = self.image.get_rect()
+
+class BulletHorizontal(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+
+        self.name = "horizontal"
+        self.direction = 0
+        self.image = pygame.Surface([10, 4])
         self.image.fill(white)
 
         self.rect = self.image.get_rect()
@@ -173,13 +183,26 @@ while done == False:
                 player.changespeed(0,speed)
                 direction = 2
             if event.key == pygame.K_SPACE :
-                if ammunition > 0 and direction == 8:
-                    bullet = Bullet()
+                if ammunition > 0:
+                    if direction == 8:
+                        bullet = BulletVertical()
+                        bullet.direction = 8
+                    if direction == 6:
+                        bullet = BulletHorizontal()
+                        bullet.direction = 6
+                    if direction == 4:
+                        bullet = BulletHorizontal()
+                        bullet.direction = 4
+                    if direction == 2:
+                        bullet = BulletVertical()
+                        bullet.direction = 2
+
                     bullet.rect.x = player.rect.x
                     bullet.rect.y = player.rect.y
                     all_sprites_list.add(bullet)
                     bullet_list.add(bullet)
                     ammunition -=1
+
 
 
         if event.type == pygame.KEYUP:
@@ -196,10 +219,20 @@ while done == False:
 
     # Calculate mechanics for each bullet
     for bullet in bullet_list:
+        print(bullet.name)            
+        print(bullet.direction)
 
-        # Move the bullet up 5 pixels
-        bullet.rect.y -= 5
-
+        if bullet.name == "vertical" :
+            if bullet.direction == 8:
+                bullet.rect.y -= 5
+            if bullet.direction == 2:
+                bullet.rect.y += 5
+        if bullet.name == "horizontal" :
+            if bullet.direction == 6:
+                bullet.rect.x += 5
+            if bullet.direction == 4:
+                bullet.rect.x -= 5
+        
         # See if it hit a block
         block_hit_list = pygame.sprite.spritecollide(bullet, block_list, True)
 
@@ -210,7 +243,7 @@ while done == False:
             score += 1
 
         # Remove the bullet if it flies up off the screen
-        if bullet.rect.y < -10:
+        if bullet.rect.y < -30 :
             bullet_list.remove(bullet)
             all_sprites_list.remove(bullet)
 
