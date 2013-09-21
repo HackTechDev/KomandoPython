@@ -52,7 +52,7 @@ class GraphicSprite(pygame.sprite.Sprite):
         self.rect.x = x
         self.image.set_colorkey(black)
 
-class Block(GraphicSprite):
+class Item(GraphicSprite):
     def __init__(self, x,y,width,height):
         pygame.sprite.Sprite.__init__(self)
         image = "sprites/item/toys.png"
@@ -65,9 +65,9 @@ class Block(GraphicSprite):
 
 
 class Wall(GraphicSprite):
-    def __init__(self,x,y,width,height):
+    def __init__(self,image, x, y, width, height):
         pygame.sprite.Sprite.__init__(self)
-        image = "sprites/wall/int_wall_bricks.png"
+        image = "sprites/wall/" + image
         tilex=32*1
         tiley=32*1
         x = x*32
@@ -75,7 +75,7 @@ class Wall(GraphicSprite):
         self.setGraphic2(image, tilex,tiley,x,y,width,height)
 
 class Ground(GraphicSprite):
-    def __init__(self,image, x,y,width,height):
+    def __init__(self,image, x, y, width, height):
         pygame.sprite.Sprite.__init__(self)
         image = "sprites/ground/" + image
         tilex=32*0
@@ -225,6 +225,24 @@ class Level():
             posy = posy + 1
             posx = 0 
             
+         # Load wall
+        file = open("maps/"+filename+"/wall.txt", "r")
+        line_list = file.readlines()
+        file.close()
+
+        posx = 0 
+        posy = 0
+        for line in line_list:
+            line = line[:-1]
+            tiles = line.split(':')
+            for tile in tiles:
+                print str(posx) + " " + str(posy) + " " + tile
+                if tile == "01":
+                    wall=Wall("int_wall_bricks.png", posx, posy, 32, 32)
+                all_sprites_list.add(wall)
+                posx = posx + 1
+            posy = posy + 1
+            posx = 0 
             
 
 # Call this function so the Pygame library can initialize itself
@@ -251,8 +269,8 @@ movingsprites.add(player)
 # Make the walls. (x_pos, y_pos, width, height)
 all_sprites_list=pygame.sprite.RenderPlain()
 
-# List of each block in the game
-block_list = pygame.sprite.RenderPlain()
+# List of each item in the game
+item_list = pygame.sprite.RenderPlain()
 
 # List of each bullet
 bullet_list = pygame.sprite.RenderPlain()
@@ -262,43 +280,13 @@ ground_list = pygame.sprite.RenderPlain()
 # Load level
 map1 = Level("01")
 
-# Top Wall
-posx = 0
-posy = 0
-lengthx = 30
-for x in range(lengthx):
-    wall=Wall(posx+x,posy,32,32)
-    all_sprites_list.add(wall)
 
-# Left Wall
-posx = 0
-posy = 1
-lengthx = 14
-for x in range(lengthx):
-    wall=Wall(posx,posy+x,32,32)
-    all_sprites_list.add(wall)
-
-# Bottom Wall
-posx = 0
-posy = 14
-lengthx = 30
-for x in range(lengthx):
-    wall=Wall(posx+x,posy,32,32)
-    all_sprites_list.add(wall)
-
-# Left Wall
-posx = 29
-posy = 1
-lengthx = 14
-for x in range(lengthx):
-    wall=Wall(posx,posy+x,32,32)
-    all_sprites_list.add(wall)
 
 for i in range(10):
-    block = Block(1+random.randrange(28), 1+random.randrange(14), 32, 32)
+    item = Item(1+random.randrange(28), 1+random.randrange(14), 32, 32)
 
-    block_list.add(block)
-    all_sprites_list.add(block)
+    item_list.add(item)
+    all_sprites_list.add(item)
 
 clock = pygame.time.Clock()
 
@@ -387,11 +375,11 @@ while done == False:
             if bullet.direction == 4:
                 bullet.rect.x -= 5
 
-        # See if it hit a block
-        block_hit_list = pygame.sprite.spritecollide(bullet, block_list, True)
+        # See if it hit a item
+        item_hit_list = pygame.sprite.spritecollide(bullet, item_list, True)
 
-        # For each block hit, remove the bollet and add to the score
-        for block in block_hit_list:
+        # For each item hit, remove the bollet and add to the score
+        for item in item_hit_list:
             bullet_list.remove(bullet)
             all_sprites_list.remove(bullet)
             score += 1
