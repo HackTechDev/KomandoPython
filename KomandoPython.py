@@ -1,5 +1,6 @@
 import pygame
 import random
+import sys
 
 black = (0,0,0)
 white = (255,255,255)
@@ -74,9 +75,9 @@ class Wall(GraphicSprite):
         self.setGraphic2(image, tilex,tiley,x,y,width,height)
 
 class Ground(GraphicSprite):
-    def __init__(self,x,y,width,height):
+    def __init__(self,image, x,y,width,height):
         pygame.sprite.Sprite.__init__(self)
-        image = "sprites/ground/brown_paving.png"
+        image = "sprites/ground/" + image
         tilex=32*0
         tiley=32*0
         x = x*32
@@ -203,13 +204,27 @@ class Player(pygame.sprite.Sprite):
 class Level():
     # Constructor function
     def __init__(self, filename):
-        file = open("map01.txt", "r")
+        # Load background
+        file = open("maps/"+filename+"/background.txt", "r")
         line_list = file.readlines()
         file.close()
 
+        posx = 0 
+        posy = 0
         for line in line_list:
             line = line[:-1]
-            print(line)
+            tiles = line.split(':')
+            for tile in tiles:
+                print str(posx) + " " + str(posy) + " " + tile
+                if tile == "01":
+                    ground = Ground("brown_paving.png", posx, posy, 32, 32)
+                if tile == "02":
+                    ground = Ground("floors_3.png", posx, posy, 32, 32)
+                ground_list.add(ground)
+                posx = posx + 1
+            posy = posy + 1
+            posx = 0 
+            
             
 
 # Call this function so the Pygame library can initialize itself
@@ -233,9 +248,6 @@ player = Player(32, 64)
 movingsprites = pygame.sprite.RenderPlain()
 movingsprites.add(player)
 
-# Load level
-map1 = Level("map01.txt")
-
 # Make the walls. (x_pos, y_pos, width, height)
 all_sprites_list=pygame.sprite.RenderPlain()
 
@@ -247,12 +259,8 @@ bullet_list = pygame.sprite.RenderPlain()
 
 ground_list = pygame.sprite.RenderPlain()
 
-
-for x in range(1, 30):
-    for y in range(1, 15):
-        ground = Ground(x, y, 32, 32)
-        ground_list.add(ground)
-
+# Load level
+map1 = Level("01")
 
 # Top Wall
 posx = 0
@@ -272,7 +280,7 @@ for x in range(lengthx):
 
 # Bottom Wall
 posx = 0
-posy = 15
+posy = 14
 lengthx = 30
 for x in range(lengthx):
     wall=Wall(posx+x,posy,32,32)
