@@ -53,16 +53,14 @@ class GraphicSprite(pygame.sprite.Sprite):
         self.image.set_colorkey(black)
 
 class Item(GraphicSprite):
-    def __init__(self, x,y,width,height):
+    def __init__(self, image, x, y, width, height):
         pygame.sprite.Sprite.__init__(self)
-        image = "sprites/item/toys.png"
+        image = "sprites/item/" + image
         tilex=32*0
         tiley=32*0
         x = x*32
         y = y*32
         self.setGraphic2(image, tilex,tiley,x,y,width,height)
-
-
 
 class Wall(GraphicSprite):
     def __init__(self,image, x, y, width, height):
@@ -218,9 +216,10 @@ class Level():
                 print str(posx) + " " + str(posy) + " " + tile
                 if tile == "01":
                     ground = Ground("brown_paving.png", posx, posy, 32, 32)
+                    ground_list.add(ground)
                 if tile == "02":
                     ground = Ground("floors_3.png", posx, posy, 32, 32)
-                ground_list.add(ground)
+                    ground_list.add(ground)
                 posx = posx + 1
             posy = posy + 1
             posx = 0 
@@ -238,13 +237,32 @@ class Level():
             for tile in tiles:
                 print str(posx) + " " + str(posy) + " " + tile
                 if tile == "01":
-                    wall=Wall("int_wall_bricks.png", posx, posy, 32, 32)
-                all_sprites_list.add(wall)
+                    wall = Wall("int_wall_bricks.png", posx, posy, 32, 32)
+                    all_sprites_list.add(wall)
                 posx = posx + 1
             posy = posy + 1
             posx = 0 
             
+         # Load item
+        file = open("maps/"+filename+"/item.txt", "r")
+        line_list = file.readlines()
+        file.close()
 
+        posx = 0 
+        posy = 0
+        for line in line_list:
+            line = line[:-1]
+            tiles = line.split(':')
+            for tile in tiles:
+                print str(posx) + " " + str(posy) + " " + tile
+                if tile == "01":
+                    item = Item("toys.png", posx, posy, 32, 32)
+                    item_list.add(item)
+                    all_sprites_list.add(item)
+                posx = posx + 1
+            posy = posy + 1
+            posx = 0 
+ 
 # Call this function so the Pygame library can initialize itself
 pygame.init()
 
@@ -279,14 +297,6 @@ ground_list = pygame.sprite.RenderPlain()
 
 # Load level
 map1 = Level("01")
-
-
-
-for i in range(10):
-    item = Item(1+random.randrange(28), 1+random.randrange(14), 32, 32)
-
-    item_list.add(item)
-    all_sprites_list.add(item)
 
 clock = pygame.time.Clock()
 
@@ -347,8 +357,6 @@ while done == False:
                     all_sprites_list.add(bullet)
                     bullet_list.add(bullet)
                     ammunition -=1
-
-
 
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:
