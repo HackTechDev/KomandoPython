@@ -6,8 +6,6 @@ white = (255,255,255)
 blue = (0,0,255)
 red = (255,0,0)
 
-
-
 class GraphicSprite(pygame.sprite.Sprite):
 
     def setGraphic(self,tilex,tiley,tilewidth,tileheight,x,y,width,height):
@@ -92,7 +90,7 @@ class BulletVertical(pygame.sprite.Sprite):
         self.name = "vertical"
         self.direction = 0
         self.image = pygame.Surface([4, 10])
-        self.image.fill(white)
+        self.image.fill(red)
 
         self.rect = self.image.get_rect()
 
@@ -103,7 +101,7 @@ class BulletHorizontal(pygame.sprite.Sprite):
         self.name = "horizontal"
         self.direction = 0
         self.image = pygame.Surface([10, 4])
-        self.image.fill(white)
+        self.image.fill(red)
 
         self.rect = self.image.get_rect()
 
@@ -332,18 +330,24 @@ while done == False:
                     if direction == 8:
                         bullet = BulletVertical()
                         bullet.direction = 8
+                        bullet.rect.x = player.rect.x + 24
+                        bullet.rect.y = player.rect.y
                     if direction == 6:
                         bullet = BulletHorizontal()
                         bullet.direction = 6
+                        bullet.rect.x = player.rect.x + 48
+                        bullet.rect.y = player.rect.y + 32
                     if direction == 4:
                         bullet = BulletHorizontal()
                         bullet.direction = 4
+                        bullet.rect.x = player.rect.x 
+                        bullet.rect.y = player.rect.y + 32
                     if direction == 2:
                         bullet = BulletVertical()
                         bullet.direction = 2
+                        bullet.rect.x = player.rect.x + 24
+                        bullet.rect.y = player.rect.y + 64
 
-                    bullet.rect.x = player.rect.x
-                    bullet.rect.y = player.rect.y
                     all_sprites_list.add(bullet)
                     bullet_list.add(bullet)
                     ammunition -=1
