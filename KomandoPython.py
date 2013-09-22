@@ -146,12 +146,9 @@ class Player(pygame.sprite.Sprite):
         new_x=old_x+self.change_x
         self.rect.x = new_x
 
-        # Check the border of the map
+        # Check the right and left border of the map
         if self.rect.x  < 0 or self.rect.x >= ((30*32)-42):
             self.rect.x = old_x
-
-        if self.rect.y  < 0 or self.rect.y >= ((15*32)-32):
-            self.rect.y = old_y
 
         # Did this update cause us to hit a wall?
         collide = pygame.sprite.spritecollide(self, walls, False)
@@ -163,12 +160,15 @@ class Player(pygame.sprite.Sprite):
         new_y=old_y+self.change_y
         self.rect.y = new_y
 
+        # Check the up and bottom border of the map
+        if self.rect.y  < -32 or self.rect.y >= ((14*32)-32):
+            self.rect.y = old_y
+
         # Did this update cause us to hit a wall?
         collide = pygame.sprite.spritecollide(self, walls, False)
         if collide:
             # Hit a wall. Go back to the old position
             self.rect.y=old_y
-
 
         # Display images of the player
 
@@ -295,7 +295,7 @@ class Level():
             tiles = line.split(':')
             for tile in tiles:
                 if tile == "01":
-                    item = Item("toys.png", posx, posy, 32, 32)
+                    item = Item("button.png", posx, posy, 32, 32)
                     item_list.add(item)
                     all_sprites_list.add(item)
                 posx = posx + 1
@@ -303,6 +303,7 @@ class Level():
             posx = 0 
 
     def empty(self):
+        print "vider"
 
         del tolevel_list[:]
 
@@ -349,7 +350,7 @@ ground_list = pygame.sprite.RenderPlain()
 bullet_list = pygame.sprite.RenderPlain()
 
 # Load level
-level = Level("01")
+currentlevel = Level("01")
 
 clock = pygame.time.Clock()
 
@@ -357,13 +358,15 @@ font = pygame.font.Font(None, 36)
 
 done = False
 
-speed = 5
+speed = 4
 
 score = 0
 
 ammunition = 20
 
 direction = 8
+
+newLevel = False
 
 while done == False:
 
@@ -377,25 +380,27 @@ while done == False:
 
             if event.key == pygame.K_n:
                 # Todo: Check the placement of the player on the map
+                print "key n"
                 for tolevel in tolevel_list:
                     """
+                    print "****"
                     print "from: " + str(tolevel.fromx) + " " + str(tolevel.fromy)
                     print "to: " + str(tolevel.tox) + " " + str(tolevel.toy)
+                    print "level: " + tolevel.level
                     print "player: " + str(player.rect.x) + " " + str(player.rect.y)
                     print "player: " + str((player.rect.x+24)/32) + " " + str((player.rect.y + 64)/32)
                     """
                     if ((player.rect.x+24)/32) == tolevel.fromx and ((player.rect.y + 64)/32) == tolevel.fromy:
-                        level.empty()
-                        level = Level(tolevel.level)	
+                        newLevel = True;
+                        break;
+
+                if newLevel == True:
+                        currentlevel.empty()
+                        nextlevel = Level(tolevel.level)
                         player.rect.x = tolevel.tox  * 32
                         player.rect.y = (tolevel.toy - 2) * 32
+                        newLevel = False;
 
-            if event.key == pygame.K_a:
-                level.empty()
-                level = Level("01")				
-            if event.key == pygame.K_z:
-                level.empty()
-                level = Level("02")	
             if event.key == pygame.K_LEFT:
                 player.changespeed(-speed,0)
                 direction = 4
