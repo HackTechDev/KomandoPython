@@ -146,6 +146,13 @@ class Player(pygame.sprite.Sprite):
         new_x=old_x+self.change_x
         self.rect.x = new_x
 
+        # Check the border of the map
+        if self.rect.x  < 0 or self.rect.x >= ((30*32)-42):
+            self.rect.x = old_x
+
+        if self.rect.y  < 0 or self.rect.y >= ((15*32)-32):
+            self.rect.y = old_y
+
         # Did this update cause us to hit a wall?
         collide = pygame.sprite.spritecollide(self, walls, False)
         if collide:
@@ -161,6 +168,9 @@ class Player(pygame.sprite.Sprite):
         if collide:
             # Hit a wall. Go back to the old position
             self.rect.y=old_y
+
+
+        # Display images of the player
 
         # Moving right to left
         if self.change_y < 0:
@@ -325,7 +335,7 @@ background = background.convert()
 
 background.fill(black)
 
-player = Player(32, 64)
+player = Player(48, 64)
 movingsprites = pygame.sprite.RenderPlain()
 movingsprites.add(player)
 
@@ -368,12 +378,16 @@ while done == False:
             if event.key == pygame.K_n:
                 # Todo: Check the placement of the player on the map
                 for tolevel in tolevel_list:
-                    if ((player.rect.x / 32) + 2) == tolevel.fromx and ((player.rect.y / 32) + 2) == tolevel.fromy:
+                    """
+                    print "from: " + str(tolevel.fromx) + " " + str(tolevel.fromy)
+                    print "to: " + str(tolevel.tox) + " " + str(tolevel.toy)
+                    print "player: " + str(player.rect.x) + " " + str(player.rect.y)
+                    print "player: " + str((player.rect.x+24)/32) + " " + str((player.rect.y + 64)/32)
+                    """
+                    if ((player.rect.x+24)/32) == tolevel.fromx and ((player.rect.y + 64)/32) == tolevel.fromy:
                         level.empty()
                         level = Level(tolevel.level)	
-                        print tolevel.tox 
-                        print tolevel.toy 
-                        player.rect.x = (tolevel.tox - 2) * 32
+                        player.rect.x = tolevel.tox  * 32
                         player.rect.y = (tolevel.toy - 2) * 32
 
             if event.key == pygame.K_a:
