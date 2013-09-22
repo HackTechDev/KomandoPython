@@ -3,6 +3,11 @@ import random
 import sys
 from array import *
 
+"""
+Komando Python : Infiltration
+
+"""
+
 black = (0,0,0)
 white = (255,255,255)
 blue = (0,0,255)
@@ -335,8 +340,10 @@ background = background.convert()
 
 background.fill(black)
 
+# Panel
 image_fnscar = pygame.image.load("images/panel/gun_fnscar.png").convert()
-
+bar_bottom = pygame.image.load("images/panel/bar_bottom.png").convert()
+bar_right = pygame.image.load("images/panel/bar_right.png").convert()
 
 player = Player(48, 64)
 movingsprites = pygame.sprite.RenderPlain()
@@ -488,14 +495,18 @@ while done == False:
 
     all_sprites_list.draw(screen)
 
+    # Panel
     textScore=font.render("Score : "+str(score), True, blue)
     screen.blit(textScore, [0, 32*16])
 
     textAmmunition=font.render("Ammunition : "+str(ammunition), True, blue)
     screen.blit(textAmmunition, [0, 32*17])
 
+    screen.blit(bar_bottom, [0,480])
+    screen.blit(bar_right, [960,0])
     screen.blit(image_fnscar, [960,10])
 
+    # Display
     pygame.display.flip()
 
     clock.tick(40)
