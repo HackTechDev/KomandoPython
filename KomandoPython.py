@@ -1,6 +1,7 @@
 import pygame
 import random
 import sys
+from array import *
 
 black = (0,0,0)
 white = (255,255,255)
@@ -105,7 +106,7 @@ class BulletHorizontal(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
 # Sprite size: width = 48 / height = 64
-
+# Todo: Add more comments
 class Player(pygame.sprite.Sprite):
 
     # Set speed vector
@@ -148,7 +149,7 @@ class Player(pygame.sprite.Sprite):
         # Did this update cause us to hit a wall?
         collide = pygame.sprite.spritecollide(self, walls, False)
         if collide:
-            # Whoops, hit a wall. Go back to the old position
+            # Hit a wall. Go back to the old position
             self.rect.x=old_x
 
         old_y=self.rect.y
@@ -158,7 +159,7 @@ class Player(pygame.sprite.Sprite):
         # Did this update cause us to hit a wall?
         collide = pygame.sprite.spritecollide(self, walls, False)
         if collide:
-            # Whoops, hit a wall. Go back to the old position
+            # Hit a wall. Go back to the old position
             self.rect.y=old_y
 
         # Moving right to left
@@ -199,9 +200,39 @@ class Player(pygame.sprite.Sprite):
                 self.frame = 0
             self.image = self.images[self.frame//3+3+3+3]
 
+
+class toLevel():
+    fromx = 0
+    fromy = 0
+    level = ""
+    tox = 0
+    to = 0    
+    def __init__(self, value):
+        position = value.split(",")        
+        self.fromx = int(position[0]) 
+        self.fromy = int(position[1]) 
+        self.level = position[2]
+        self.tox = int(position[3])
+        self.toy = int(position[4])
+
 class Level():
     # Constructor function
     def __init__(self, filename):
+
+        # Load level parameters
+        file = open("maps/"+filename+"/level.txt", "r")
+        line_list = file.readlines()
+        file.close()
+
+
+        for line in line_list:
+            line = line[:-1]
+            parameters = line.split("=")
+            if parameters[0] == "toLevel":
+                ll = toLevel(parameters[1])
+                tolevel_list.append(ll)
+
+
 
         # Load background
         file = open("maps/"+filename+"/background.txt", "r")
@@ -262,6 +293,9 @@ class Level():
             posx = 0 
 
     def empty(self):
+
+        del tolevel_list[:]
+
         for sprite in all_sprites_list:
             all_sprites_list.remove(sprite)
        
@@ -280,6 +314,8 @@ screen_width=1200
 # 64*12
 screen_height=640
 screen=pygame.display.set_mode([screen_width,screen_height])
+
+tolevel_list = list()
 
 pygame.display.set_caption('Komando Python')
 
@@ -326,6 +362,20 @@ while done == False:
             done=True
 
         if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_q:
+                done=True
+
+            if event.key == pygame.K_n:
+                # Todo: Check the placement of the player on the map
+                for tolevel in tolevel_list:
+                    if ((player.rect.x / 32) + 2) == tolevel.fromx and ((player.rect.y / 32) + 2) == tolevel.fromy:
+                        level.empty()
+                        level = Level(tolevel.level)	
+                        print tolevel.tox 
+                        print tolevel.toy 
+                        player.rect.x = (tolevel.tox - 2) * 32
+                        player.rect.y = (tolevel.toy - 2) * 32
+
             if event.key == pygame.K_a:
                 level.empty()
                 level = Level("01")				
