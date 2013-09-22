@@ -344,7 +344,9 @@ background.fill(black)
 image_fnscar = pygame.image.load("images/panel/gun_fnscar.png").convert()
 bar_bottom = pygame.image.load("images/panel/bar_bottom.png").convert()
 bar_right = pygame.image.load("images/panel/bar_right.png").convert()
+titleScreenImage = pygame.image.load("images/fs.jpg").convert()
 
+# Sprites
 player = Player(48, 64)
 movingsprites = pygame.sprite.RenderPlain()
 movingsprites.add(player)
@@ -376,6 +378,32 @@ ammunition = 20
 direction = 8
 
 newLevel = False
+
+# Title screen
+
+titleScreen=font.render("Komando Python : Infiltration", True, blue)
+titleScreenRect = titleScreen.get_rect()
+#titleScreenRect.centerx = screen.get_rect().centerx
+#titleScreenRect.y = 150
+screen.blit(titleScreenImage, [120,0])
+#screen.blit(titleScreen, titleScreenRect)
+screen.blit(titleScreen, [130,10])
+
+pygame.display.update()
+
+# Wait for enter to be pressed
+# The user can also quit
+waiting = True
+while waiting:
+   for event in pygame.event.get():
+      if event.type == pygame.QUIT:
+         sys.exit()
+      elif event.type == pygame.KEYDOWN:
+         if event.key == pygame.K_RETURN:
+            waiting = False
+            break
+
+# Main game loop
 
 while done == False:
 
