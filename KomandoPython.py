@@ -303,7 +303,6 @@ class Level():
             posx = 0 
 
     def empty(self):
-        print "vider"
 
         del tolevel_list[:]
 
@@ -328,13 +327,16 @@ screen=pygame.display.set_mode([screen_width,screen_height])
 
 tolevel_list = list()
 
-pygame.display.set_caption('Komando Python')
+pygame.display.set_caption('Komando Python : Infiltration')
 
 background = pygame.Surface(screen.get_size())
 
 background = background.convert()
 
 background.fill(black)
+
+image_fnscar = pygame.image.load("images/panel/gun_fnscar.png").convert()
+
 
 player = Player(48, 64)
 movingsprites = pygame.sprite.RenderPlain()
@@ -380,7 +382,6 @@ while done == False:
 
             if event.key == pygame.K_n:
                 # Todo: Check the placement of the player on the map
-                print "key n"
                 for tolevel in tolevel_list:
                     """
                     print "****"
@@ -492,6 +493,8 @@ while done == False:
 
     textAmmunition=font.render("Ammunition : "+str(ammunition), True, blue)
     screen.blit(textAmmunition, [0, 32*17])
+
+    screen.blit(image_fnscar, [960,10])
 
     pygame.display.flip()
 
