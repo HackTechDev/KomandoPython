@@ -1,327 +1,25 @@
 import pygame
 import random
 import sys
+sys.path.append('./package')
+
+from GraphicSprite import *
+from Item import *
+from Player import *
+from Wall import *
+from Bullet import *
+from Ground import *
+from Level import *
+from Way import *
 from array import *
+from Colour import *
 
 """
 Komando Python : Infiltration
 
 """
 
-black = (0,0,0)
-white = (255,255,255)
-blue = (0,0,255)
-red = (255,0,0)
-
-class GraphicSprite(pygame.sprite.Sprite):
-
-    def setGraphic(self,tilex,tiley,tilewidth,tileheight,x,y,width,height):
-        myimage = pygame.image.load("sprites/wall/int_wall_bricks.png").convert()
-
-        # Make a blue wall, of the size specified in the parameters
-        self.image = pygame.Surface([width, height])
-
-        for row in range(height//tileheight+1):
-            for column in range(width//tilewidth+1):
-                self.image.blit(myimage,(column*tilewidth,row*tileheight),(tilex,tiley,tilewidth,tileheight))
-
-        # Make our top-left corner the passed-in location.
-        self.rect = self.image.get_rect()
-        self.rect.y = y
-        self.rect.x = x
-        self.image.set_colorkey(black)
-
-    def setGraphic2(self,image, tilex,tiley,x,y,width,height):
-        myimage = pygame.image.load(image).convert()
-
-        self.image = pygame.Surface([width, height])
-
-        self.image.blit(myimage,(0,0),(tilex,tiley,32,32))
-        for column in range(width//32-2):
-            self.image.blit(myimage,((column+1)*32,0),(tilex+32,tiley,32,32))
-        self.image.blit(myimage,( (width//32-1)*32,0),(tilex+64,tiley,32,32))
-
-        for row in range(height//32+1):
-            self.image.blit(myimage,(0,(row+1)*32),(tilex,tiley+32,32,32))
-            for column in range(width//32+1):
-                self.image.blit(myimage,((column+1)*32,(row+1)*32),(tilex+32,tiley+32,32,32))
-            self.image.blit(myimage,((width//32-1)*32,(row+1)*32),(tilex+64,tiley+32,32,32))
-
-        self.image.blit(myimage,(0,(height//32-1)*32),(tilex,tiley+64,32,32))
-        for column in range(width//32-2):
-            self.image.blit(myimage,((column+1)*32,(height//32-1)*32),(tilex+32,tiley+64,32,32))
-        self.image.blit(myimage,( (width//32-1)*32,(height//32-1)*32),(tilex+64,tiley+64,32,32))
-
-        # Make our top-left corner the passed-in location.
-        self.rect = self.image.get_rect()
-        self.rect.y = y
-        self.rect.x = x
-        self.image.set_colorkey(black)
-
-class Item(GraphicSprite):
-    def __init__(self, image, x, y, width, height):
-        pygame.sprite.Sprite.__init__(self)
-        image = "sprites/item/" + image
-        tilex=32*0
-        tiley=32*0
-        x = x*32
-        y = y*32
-        self.setGraphic2(image, tilex,tiley,x,y,width,height)
-
-class Wall(GraphicSprite):
-    def __init__(self,image, x, y, width, height):
-        pygame.sprite.Sprite.__init__(self)
-        image = "sprites/wall/" + image
-        tilex=32*1
-        tiley=32*1
-        x = x*32
-        y = y*32
-        self.setGraphic2(image, tilex,tiley,x,y,width,height)
-
-class Ground(GraphicSprite):
-    def __init__(self,image, x, y, width, height):
-        pygame.sprite.Sprite.__init__(self)
-        image = "sprites/ground/" + image
-        tilex=32*0
-        tiley=32*0
-        x = x*32
-        y = y*32
-        self.setGraphic2(image, tilex,tiley,x,y,width,height)
-
-class BulletVertical(pygame.sprite.Sprite):
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
-
-        self.name = "vertical"
-        self.direction = 0
-        self.image = pygame.Surface([4, 10])
-        self.image.fill(red)
-
-        self.rect = self.image.get_rect()
-
-class BulletHorizontal(pygame.sprite.Sprite):
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
-
-        self.name = "horizontal"
-        self.direction = 0
-        self.image = pygame.Surface([10, 4])
-        self.image.fill(red)
-
-        self.rect = self.image.get_rect()
-
-# Sprite size: width = 48 / height = 64
-# Todo: Add more comments
-class Player(pygame.sprite.Sprite):
-
-    # Set speed vector
-    change_x=0
-    change_y=0
-
-    # This is a frame counter used to determing which image to draw
-    frame = 0
-
-    def __init__(self,x,y):
-        pygame.sprite.Sprite.__init__(self)
-        self.images=[]
-
-        # Number of sprite + 1 = 13
-        for i in range(1,13):
-            img = pygame.image.load("sprites/player/player"+str(i)+".png").convert_alpha()
-            img.set_colorkey(white)
-            self.images.append(img)
-
-        # By default, use image 0
-        self.image = self.images[0]
-
-        # Make our top-left corner the passed-in location.
-        self.rect = self.image.get_rect()
-        self.rect.y = y
-        self.rect.x = x
-
-    # Change the speed of the player
-    def changespeed(self,x,y):
-        self.change_x+=x
-        self.change_y+=y
-
-    # Find a new position for the player
-    def update(self,walls):
-        # Get the old position, in case we need to go back to it
-        old_x=self.rect.x
-        new_x=old_x+self.change_x
-        self.rect.x = new_x
-
-        # Check the right and left border of the map
-        if self.rect.x  < 0 or self.rect.x >= ((30*32)-42):
-            self.rect.x = old_x
-
-        # Did this update cause us to hit a wall?
-        collide = pygame.sprite.spritecollide(self, walls, False)
-        if collide:
-            # Hit a wall. Go back to the old position
-            self.rect.x=old_x
-
-        old_y=self.rect.y
-        new_y=old_y+self.change_y
-        self.rect.y = new_y
-
-        # Check the up and bottom border of the map
-        if self.rect.y  < -32 or self.rect.y >= ((14*32)-32):
-            self.rect.y = old_y
-
-        # Did this update cause us to hit a wall?
-        collide = pygame.sprite.spritecollide(self, walls, False)
-        if collide:
-            # Hit a wall. Go back to the old position
-            self.rect.y=old_y
-
-        # Display images of the player
-
-        # Moving right to left
-        if self.change_y < 0:
-            self.frame += 1
-
-            # We go from 0...3. If we are above image 3, reset to 0
-            # Multiply by 4 because we flip the image every 4 frames
-            if self.frame > 2*3:
-                self.frame = 0
-
-            # Grab the image, do floor division by 4 because we flip
-            # every 4 frames.
-            # Frames 0...3 -> image[0]
-            # Frames 4...7 -> image[1]
-            # etc.
-            self.image = self.images[self.frame//3]
-
-        # Move left to right. About the same as before, but use
-        # images 4...7 instead of 0...3. Note that we add 4 in the last
-        # line to do this.
-        if self.change_x > 0:
-            self.frame += 1
-            if self.frame > 2*3:
-                self.frame = 0
-            self.image = self.images[self.frame//3+3]
-
-        # Move bottom to top
-        if self.change_y > 0:
-            self.frame += 1
-            if self.frame > 2*3:
-                self.frame = 0
-            self.image = self.images[self.frame//3+3+3]
-
-        if self.change_x < 0:
-            self.frame += 1
-            if self.frame > 2*3:
-                self.frame = 0
-            self.image = self.images[self.frame//3+3+3+3]
-
-
-class toLevel():
-    fromx = 0
-    fromy = 0
-    level = ""
-    tox = 0
-    to = 0    
-    def __init__(self, value):
-        position = value.split(",")        
-        self.fromx = int(position[0]) 
-        self.fromy = int(position[1]) 
-        self.level = position[2]
-        self.tox = int(position[3])
-        self.toy = int(position[4])
-
-class Level():
-    # Constructor function
-    def __init__(self, filename):
-
-        # Load level parameters
-        file = open("maps/"+filename+"/level.txt", "r")
-        line_list = file.readlines()
-        file.close()
-
-
-        for line in line_list:
-            line = line[:-1]
-            parameters = line.split("=")
-            if parameters[0] == "toLevel":
-                ll = toLevel(parameters[1])
-                tolevel_list.append(ll)
-
-
-
-        # Load background
-        file = open("maps/"+filename+"/background.txt", "r")
-        line_list = file.readlines()
-        file.close()
-
-        posx = 0 
-        posy = 0
-        for line in line_list:
-            line = line[:-1]
-            tiles = line.split(':')
-            for tile in tiles:
-                if tile == "01":
-                    ground = Ground("brown_paving.png", posx, posy, 32, 32)
-                    ground_list.add(ground)
-                if tile == "02":
-                    ground = Ground("floors_3.png", posx, posy, 32, 32)
-                    ground_list.add(ground)
-                posx = posx + 1
-            posy = posy + 1
-            posx = 0 
-            
-        # Load wall
-        file = open("maps/"+filename+"/wall.txt", "r")
-        line_list = file.readlines()
-        file.close()
-
-        posx = 0 
-        posy = 0
-        for line in line_list:
-            line = line[:-1]
-            tiles = line.split(':')
-            for tile in tiles:
-                if tile == "01":
-                    wall = Wall("int_wall_bricks.png", posx, posy, 32, 32)
-                    all_sprites_list.add(wall)
-                posx = posx + 1
-            posy = posy + 1
-            posx = 0 
-            
-        # Load item
-        file = open("maps/"+filename+"/item.txt", "r")
-        line_list = file.readlines()
-        file.close()
-
-        posx = 0 
-        posy = 0
-        for line in line_list:
-            line = line[:-1]
-            tiles = line.split(':')
-            for tile in tiles:
-                if tile == "01":
-                    item = Item("button.png", posx, posy, 32, 32)
-                    item_list.add(item)
-                    all_sprites_list.add(item)
-                posx = posx + 1
-            posy = posy + 1
-            posx = 0 
-
-    def empty(self):
-
-        del tolevel_list[:]
-
-        for sprite in all_sprites_list:
-            all_sprites_list.remove(sprite)
-       
-        for item in item_list:
-            item_list.remove(item)
-    
-        for ground in ground_list:
-            ground_list.remove(ground)
-
- 
-# Call this function so the Pygame library can initialize itself
+# Call this function so the Pygame package can initialize itself
 pygame.init()
 
 # 48*25
@@ -330,7 +28,7 @@ screen_width=1200
 screen_height=640
 screen=pygame.display.set_mode([screen_width,screen_height])
 
-tolevel_list = list()
+way_list = list()
 
 pygame.display.set_caption('Komando Python : Infiltration')
 
@@ -361,7 +59,7 @@ ground_list = pygame.sprite.RenderPlain()
 bullet_list = pygame.sprite.RenderPlain()
 
 # Load level
-currentlevel = Level("01")
+currentlevel = Level("01", way_list, ground_list, all_sprites_list, item_list)
 
 clock = pygame.time.Clock()
 
@@ -417,24 +115,24 @@ while done == False:
 
             if event.key == pygame.K_n:
                 # Todo: Check the placement of the player on the map
-                for tolevel in tolevel_list:
+                for way in way_list:
                     """
                     print "****"
-                    print "from: " + str(tolevel.fromx) + " " + str(tolevel.fromy)
-                    print "to: " + str(tolevel.tox) + " " + str(tolevel.toy)
-                    print "level: " + tolevel.level
+                    print "from: " + str(way.fromx) + " " + str(way.fromy)
+                    print "to: " + str(way.tox) + " " + str(way.toy)
+                    print "level: " + way.level
                     print "player: " + str(player.rect.x) + " " + str(player.rect.y)
                     print "player: " + str((player.rect.x+24)/32) + " " + str((player.rect.y + 64)/32)
                     """
-                    if ((player.rect.x+24)/32) == tolevel.fromx and ((player.rect.y + 64)/32) == tolevel.fromy:
+                    if ((player.rect.x+24)/32) == way.fromx and ((player.rect.y + 64)/32) == way.fromy:
                         newLevel = True;
                         break;
 
                 if newLevel == True:
-                        currentlevel.empty()
-                        nextlevel = Level(tolevel.level)
-                        player.rect.x = tolevel.tox  * 32
-                        player.rect.y = (tolevel.toy - 2) * 32
+                        currentlevel.empty(way_list, ground_list, all_sprites_list, item_list)
+                        nextlevel = Level(way.level, way_list, ground_list, all_sprites_list, item_list)
+                        player.rect.x = way.tox  * 32
+                        player.rect.y = (way.toy - 2) * 32
                         newLevel = False;
 
             if event.key == pygame.K_LEFT:
