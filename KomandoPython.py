@@ -62,6 +62,8 @@ movingsprites.add(player)
 
 all_sprites_list = pygame.sprite.RenderPlain()
 
+wall_list = pygame.sprite.RenderPlain()
+
 item_list = pygame.sprite.RenderPlain()
 
 ground_list = pygame.sprite.RenderPlain()
@@ -70,7 +72,7 @@ ground_list = pygame.sprite.RenderPlain()
 bullet_list = pygame.sprite.RenderPlain()
 
 # Load level
-currentlevel = Level("01", way_list, ground_list, all_sprites_list, item_list)
+currentlevel = Level("01", way_list, ground_list, wall_list, all_sprites_list, item_list)
 
 clock = pygame.time.Clock()
 
@@ -149,8 +151,8 @@ while gameloop == False:
                         break;
 
                 if newLevel == True:
-                        currentlevel.empty(way_list, ground_list, all_sprites_list, item_list)
-                        nextlevel = Level(way.level, way_list, ground_list, all_sprites_list, item_list)
+                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list)
+                        nextlevel = Level(way.level, way_list, ground_list, wall_list, all_sprites_list, item_list)
                         player.rect.x = way.tox  * 32
                         player.rect.y = (way.toy - 2) * 32
                         newLevel = False;
@@ -220,10 +222,17 @@ while gameloop == False:
             if bullet.direction == 4:
                 bullet.rect.x -= 5
 
+        # See if it hit a wall
+
+        if pygame.sprite.spritecollide(bullet, wall_list, False):
+            boomsound.play()
+            bullet_list.remove(bullet)
+            all_sprites_list.remove(bullet)
+
         # See if it hit a item
         item_hit_list = pygame.sprite.spritecollide(bullet, item_list, True)
 
-        # For each item hit, remove the bollet and add to the score
+        # For each item hit, remove the bullet and add to the score
         for item in item_hit_list:
             boomsound.play()
             bullet_list.remove(bullet)
@@ -231,7 +240,7 @@ while gameloop == False:
             score += 1
 
         # Remove the bullet if it flies up off the screen
-        if bullet.rect.x > (29*32) or bullet.rect.x < (1*32) or bullet.rect.y > (15*32) or bullet.rect.y < (1*32):
+        if bullet.rect.x > (30*32) or bullet.rect.x < 0 or bullet.rect.y > (15*32) or bullet.rect.y < 0:
             bullet_list.remove(bullet)
             all_sprites_list.remove(bullet)
 

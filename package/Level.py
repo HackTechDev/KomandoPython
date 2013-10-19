@@ -7,7 +7,7 @@ from Item import *
 
 class Level():
     # Constructor function
-    def __init__(self, filename, way_list, ground_list, all_sprites_list, item_list):
+    def __init__(self, filename, way_list, ground_list, wall_list, all_sprites_list, item_list):
 
         # Load level parameters
         file = open("maps/"+filename+"/level.txt", "r")
@@ -56,6 +56,7 @@ class Level():
             for tile in tiles:
                 if tile == "01":
                     wall = Wall("int_wall_bricks.png", posx, posy, 32, 32)
+                    wall_list.add(wall)
                     all_sprites_list.add(wall)
                 posx = posx + 1
             posy = posy + 1
@@ -80,7 +81,7 @@ class Level():
             posy = posy + 1
             posx = 0 
 
-    def empty(self, way_list, ground_list, all_sprites_list, item_list):
+    def empty(self, way_list, ground_list, wall_list, all_sprites_list, item_list):
 
         del way_list[:]
 
@@ -92,3 +93,6 @@ class Level():
     
         for ground in ground_list:
             ground_list.remove(ground)
+
+        for wall in wall_list:
+            wall_list.remove(ground)
