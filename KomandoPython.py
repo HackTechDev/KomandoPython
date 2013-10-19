@@ -1,6 +1,7 @@
 import pygame
 import random
 import sys
+import os
 sys.path.append('./package')
 
 from GraphicSprite import *
@@ -19,8 +20,19 @@ Komando Python : Infiltration
 
 """
 
+# setup mixer to avoid sound lag
+
+pygame.mixer.pre_init(44100, -16, 2, 2048)
+
 # Call this function so the Pygame package can initialize itself
 pygame.init()
+
+# Music
+pygame.mixer.music.load(os.path.join('music', 'an-turr.ogg'))
+
+# Sound
+jump = pygame.mixer.Sound(os.path.join('sound','jump.wav'))
+fail = pygame.mixer.Sound(os.path.join('sound','fail.wav'))
 
 # 48*25
 screen_width=1200
@@ -65,7 +77,7 @@ clock = pygame.time.Clock()
 
 font = pygame.font.Font(None, 36)
 
-done = False
+gameloop = False
 
 speed = 4
 
@@ -98,17 +110,33 @@ while waiting:
             waiting = False
             break
 
+# play music non-stop
+pygame.mixer.music.play(-1)
+
 # Main game loop
 
-while done == False:
+while gameloop == False:
+
+    # indicate if music is playing
+    if pygame.mixer.music.get_busy():
+        print " music is playing"
+    else:
+        print " music is not playing"
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            done=True
+            gameloop=True
 
         if event.type == pygame.KEYDOWN:
+
+            if event.key == pygame.K_m:
+                if pygame.mixer.music.get_busy():
+                    pygame.mixer.music.stop()
+                else:
+                    pygame.mixer.music.play()
+
             if event.key == pygame.K_q:
-                done=True
+                gameloop=True
 
             if event.key == pygame.K_n:
                 # Todo: Check the placement of the player on the map
@@ -133,19 +161,28 @@ while done == False:
                         newLevel = False;
 
             if event.key == pygame.K_LEFT:
+                fail.play()
+                print "playing fail.wav once"
                 player.changespeed(-speed,0)
                 direction = 4
             if event.key == pygame.K_RIGHT:
+                fail.play()
+                print "playing fail.wav once"
                 player.changespeed(speed,0)
                 direction = 6
             if event.key == pygame.K_UP:
-                player.changespeed(0,-speed)
+                fail.play()
+                print "playing fail.wav once"
                 direction = 8
             if event.key == pygame.K_DOWN:
+                fail.play()
+                print "playing fail.wav once"
                 player.changespeed(0,speed)
                 direction = 2
             if event.key == pygame.K_SPACE :
                 if ammunition > 0:
+                    jump.play()
+                    print "playing jump.wav once"
                     if direction == 8:
                         bullet = BulletVertical()
                         bullet.direction = 8
@@ -256,5 +293,5 @@ while waiting:
             waiting = False
             break
 
-
+print "Good mission!"
 pygame.quit()
