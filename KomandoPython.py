@@ -29,9 +29,9 @@ pygame.init()
 # Music
 pygame.mixer.music.load(os.path.join('music', 'an-turr.ogg'))
 
-# Sound
-jump = pygame.mixer.Sound(os.path.join('sound','jump.wav'))
-fail = pygame.mixer.Sound(os.path.join('sound','fail.wav'))
+# Sounds
+shootsound = pygame.mixer.Sound(os.path.join('sound','shoot.wav'))
+footstepsound = pygame.mixer.Sound(os.path.join('sound','footstep.wav'))
 
 # 48*25
 screen_width=1200
@@ -88,6 +88,8 @@ direction = 8
 
 newLevel = False
 
+debug = False
+
 # Title screen
 
 titleScreen=font.render("Komando Python : Infiltration", True, blue)
@@ -116,12 +118,6 @@ pygame.mixer.music.play(-1)
 
 while gameloop == False:
 
-    # indicate if music is playing
-    if pygame.mixer.music.get_busy():
-        print " music is playing"
-    else:
-        print " music is not playing"
-
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             gameloop=True
@@ -140,14 +136,14 @@ while gameloop == False:
             if event.key == pygame.K_n:
                 # Todo: Check the placement of the player on the map
                 for way in way_list:
-                    """
-                    print "****"
-                    print "from: " + str(way.fromx) + " " + str(way.fromy)
-                    print "to: " + str(way.tox) + " " + str(way.toy)
-                    print "level: " + way.level
-                    print "player: " + str(player.rect.x) + " " + str(player.rect.y)
-                    print "player: " + str((player.rect.x+24)/32) + " " + str((player.rect.y + 64)/32)
-                    """
+                    if debug == True:
+                        print "****"
+                        print "from: " + str(way.fromx) + " " + str(way.fromy)
+                        print "to: " + str(way.tox) + " " + str(way.toy)
+                        print "level: " + way.level
+                        print "player: " + str(player.rect.x) + " " + str(player.rect.y)
+                        print "player: " + str((player.rect.x+24)/32) + " " + str((player.rect.y + 64)/32)
+
                     if ((player.rect.x+24)/32) == way.fromx and ((player.rect.y + 64)/32) == way.fromy:
                         newLevel = True;
                         break;
@@ -160,28 +156,24 @@ while gameloop == False:
                         newLevel = False;
 
             if event.key == pygame.K_LEFT:
-                fail.play()
-                print "playing fail.wav once"
-                player.changespeed(-speed,0)
+                footstepsound.play()
+                player.changespeed(-speed, 0)
                 direction = 4
             if event.key == pygame.K_RIGHT:
-                fail.play()
-                print "playing fail.wav once"
-                player.changespeed(speed,0)
+                footstepsound.play()
+                player.changespeed(speed, 0)
                 direction = 6
             if event.key == pygame.K_UP:
-                fail.play()
-                print "playing fail.wav once"
+                footstepsound.play()
+                player.changespeed(0, -speed)
                 direction = 8
             if event.key == pygame.K_DOWN:
-                fail.play()
-                print "playing fail.wav once"
-                player.changespeed(0,speed)
+                footstepsound.play()
+                player.changespeed(0, speed)
                 direction = 2
             if event.key == pygame.K_SPACE :
                 if ammunition > 0:
-                    jump.play()
-                    print "playing jump.wav once"
+                    shootsound.play()
                     if direction == 8:
                         bullet = BulletVertical()
                         bullet.direction = 8

@@ -1,4 +1,5 @@
 import pygame
+import os
 from Colour import *
 
 # Sprite size: width = 48 / height = 64
