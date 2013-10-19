@@ -31,7 +31,7 @@ pygame.mixer.music.load(os.path.join('music', 'an-turr.ogg'))
 
 # Sounds
 shootsound = pygame.mixer.Sound(os.path.join('sound','shoot.wav'))
-footstepsound = pygame.mixer.Sound(os.path.join('sound','footstep.wav'))
+boomsound = pygame.mixer.Sound(os.path.join('sound','boom.wav'))
 
 # 48*25
 screen_width=1200
@@ -156,19 +156,15 @@ while gameloop == False:
                         newLevel = False;
 
             if event.key == pygame.K_LEFT:
-                footstepsound.play()
                 player.changespeed(-speed, 0)
                 direction = 4
             if event.key == pygame.K_RIGHT:
-                footstepsound.play()
                 player.changespeed(speed, 0)
                 direction = 6
             if event.key == pygame.K_UP:
-                footstepsound.play()
                 player.changespeed(0, -speed)
                 direction = 8
             if event.key == pygame.K_DOWN:
-                footstepsound.play()
                 player.changespeed(0, speed)
                 direction = 2
             if event.key == pygame.K_SPACE :
@@ -229,6 +225,7 @@ while gameloop == False:
 
         # For each item hit, remove the bollet and add to the score
         for item in item_hit_list:
+            boomsound.play()
             bullet_list.remove(bullet)
             all_sprites_list.remove(bullet)
             score += 1
@@ -278,7 +275,8 @@ waiting = True
 while waiting:
    for event in pygame.event.get():
       if event.type == pygame.QUIT:
-         sys.exit()
+         waiting = False
+         break
       elif event.type == pygame.KEYDOWN:
          if event.key == pygame.K_RETURN:
             waiting = False
