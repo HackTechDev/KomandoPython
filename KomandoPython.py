@@ -20,8 +20,7 @@ Komando Python : Infiltration
 
 """
 
-# setup mixer to avoid sound lag
-
+# Setup mixer to avoid sound lag
 pygame.mixer.pre_init(44100, -16, 2, 2048)
 
 # Call this function so the Pygame package can initialize itself
