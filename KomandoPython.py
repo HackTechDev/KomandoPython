@@ -21,7 +21,9 @@ from UserInterface import *
 from lib import ezmenu
 
 """
+
 Komando Python : Infiltration
+By le Sanglier des Ardennes
 
 """
 
@@ -147,7 +149,6 @@ def viewCommando():
             mousex = pygame.mouse.get_pos()[0] 
             mousey = pygame.mouse.get_pos()[1] 
             if mousex > commando1x-30 and mousex < commando1x+30 and mousey > commando1y-30 and mousey < commando1y+30 :
-                
                 commandoName1 = font.render("Commando #1", True, blue)
                 commandoName1Rect = commandoName1.get_rect()
                 screen.blit(commandoName1, [commando1x-25, commando1y+30])
@@ -159,21 +160,17 @@ def viewCommando():
                 screen.blit(commandoName2, [commando2x-25, commando2y+30])
                 pygame.display.update()
 
-
             if mousex > commando3x-30 and mousex < commando3x+30 and mousey > commando3y-30 and mousey < commando3y+30 :
                 commandoName3 = font.render("Commando #3", True, blue)
                 commandoName3Rect = commandoName3.get_rect()
                 screen.blit(commandoName3, [commando3x-25, commando3y+30])
                 pygame.display.update()
 
-
             if mousex > commando4x-30 and mousex < commando4x+30 and mousey > commando4y-30 and mousey < commando4y+30 :
                 commandoName4 = font.render("Commando #4", True, blue)
                 commandoName4Rect = commandoName4.get_rect()
                 screen.blit(commandoName4, [commando4x-100, commando4y+30])
                 pygame.display.update()
-
-
 
 def selectMission():
 

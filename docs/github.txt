@@ -1,0 +1,12 @@
+Github repository:
+
+https://github.com/Nekrofage/KomandoPython
+
+How to commit your modifications?
+
+$ git clone https://github.com/Nekrofage/KomandoPython.git
+$ git remote add origin https://github.com/Nekrofage/KomandoPython.git
+...
+Your code modification
+...
+$ git push -u origin master
