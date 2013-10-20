@@ -35,16 +35,140 @@ def gameQuit():
     Config.menuloop = False
     
 def viewMission():
-    print "View Mission"
-    pass
+   # Call this function so the Pygame package can initialize itself
+    pygame.init()
+ 
+    # 48*25
+    screen_width=1200
+    # 64*12
+    screen_height=640
+    screen=pygame.display.set_mode([screen_width,screen_height])
+
+    # Background image
+    titleScreenImage = pygame.image.load("images/fs.jpg").convert()
+
+    # Font
+    font = pygame.font.Font(None, 36)
+
+    pygame.display.set_caption('Komando Python : Infiltration')
+
+    background = pygame.Surface(screen.get_size())
+
+    background = background.convert()
+
+    background.fill(black)
+
+    # Title screen
+
+    titleScreen=font.render("View Mission", True, blue)
+    titleScreenRect = titleScreen.get_rect()
+    screen.blit(titleScreenImage, [120,0])
+    screen.blit(titleScreen, [130,10])
+
+    pygame.display.update()
+
+    # Wait for enter to be pressed
+    # The user can also quit
+    waiting = True
+    while waiting:
+       for event in pygame.event.get():
+          if event.type == pygame.QUIT:
+             sys.exit()
+          elif event.type == pygame.KEYDOWN:
+             if event.key == pygame.K_RETURN:
+                waiting = False
+                break
 
 def viewCommando():
-    print "View Commando"
-    pass
+   # Call this function so the Pygame package can initialize itself
+    pygame.init()
+ 
+    # 48*25
+    screen_width=1200
+    # 64*12
+    screen_height=640
+    screen=pygame.display.set_mode([screen_width,screen_height])
+
+    # Background image
+    titleScreenImage = pygame.image.load("images/fs.jpg").convert()
+
+    # Font
+    font = pygame.font.Font(None, 36)
+
+    pygame.display.set_caption('Komando Python : Infiltration')
+
+    background = pygame.Surface(screen.get_size())
+
+    background = background.convert()
+
+    background.fill(black)
+
+    # Title screen
+
+    titleScreen=font.render("View Commando", True, blue)
+    titleScreenRect = titleScreen.get_rect()
+    screen.blit(titleScreenImage, [120,0])
+    screen.blit(titleScreen, [130,10])
+
+    pygame.display.update()
+
+    # Wait for enter to be pressed
+    # The user can also quit
+    waiting = True
+    while waiting:
+       for event in pygame.event.get():
+          if event.type == pygame.QUIT:
+             sys.exit()
+          elif event.type == pygame.KEYDOWN:
+             if event.key == pygame.K_RETURN:
+                waiting = False
+                break
 
 def selectMission():
-    print "Select Mission"
-    pass
+
+   # Call this function so the Pygame package can initialize itself
+    pygame.init()
+ 
+    # 48*25
+    screen_width=1200
+    # 64*12
+    screen_height=640
+    screen=pygame.display.set_mode([screen_width,screen_height])
+
+    # Background image
+    titleScreenImage = pygame.image.load("images/fs.jpg").convert()
+
+    # Font
+    font = pygame.font.Font(None, 36)
+
+    pygame.display.set_caption('Komando Python : Infiltration')
+
+    background = pygame.Surface(screen.get_size())
+
+    background = background.convert()
+
+    background.fill(black)
+
+    # Title screen
+
+    titleScreen=font.render("Mission Selection", True, blue)
+    titleScreenRect = titleScreen.get_rect()
+    screen.blit(titleScreenImage, [120,0])
+    screen.blit(titleScreen, [130,10])
+
+    pygame.display.update()
+
+    # Wait for enter to be pressed
+    # The user can also quit
+    waiting = True
+    while waiting:
+       for event in pygame.event.get():
+          if event.type == pygame.QUIT:
+             sys.exit()
+          elif event.type == pygame.KEYDOWN:
+             if event.key == pygame.K_RETURN:
+                waiting = False
+                break
 
 def gameUrl(url):
     print "KomandoPython.com"
