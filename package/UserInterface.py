@@ -11,7 +11,7 @@ def setCodename(screen, question):
     pygame.font.init()  
     text = ""
     pygame.display.flip()
-    line1 = write("Codename:")
+    line1 = write("Codename")
     while True:
         screen.fill((0,0,0)) #paint background black
         line2 = write("> " + text)

@@ -4,6 +4,7 @@ import sys
 import os
 import webbrowser
 import time
+import sqlite3 as lite
 
 sys.path.append('./package')
 
@@ -19,6 +20,7 @@ from array import *
 from Colour import *
 from UserInterface import *
 from lib import ezmenu
+from SqliteDB import *
 
 """
 
@@ -489,6 +491,12 @@ def gotoMission():
 #Main script
 def main():
 
+    # Komando Database
+    komandodb = SqliteDB()
+
+    komandodb.initializeDB("kommando")
+    komandodb.insertMembers()
+    #komandodb.listMembers()
 
     # Call this function so the Pygame package can initialize itself
     pygame.init()
@@ -565,9 +573,6 @@ def main():
         Config.menu.draw(screen)
         pygame.display.flip()
 
-#        while Config.mission:
-            
- 
     # End title screen
 
     titleScreen=font.render("Komando Python : Infiltration", True, blue)
