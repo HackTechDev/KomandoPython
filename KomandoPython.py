@@ -14,11 +14,16 @@ from Level import *
 from Way import *
 from array import *
 from Colour import *
+from UserInterface import *
 
 """
 Komando Python : Infiltration
 
 """
+
+
+
+
 
 # Setup mixer to avoid sound lag
 pygame.mixer.pre_init(44100, -16, 2, 2048)
@@ -115,6 +120,10 @@ while waiting:
 
 # play music non-stop
 pygame.mixer.music.play(-1)
+
+# Set codename
+codename = setCodename(screen, "Codename")
+print codename 
 
 # Main game loop
 
