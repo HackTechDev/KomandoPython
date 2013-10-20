@@ -84,6 +84,22 @@ def viewCommando():
     # Call this function so the Pygame package can initialize itself
     pygame.init()
  
+    # Commando 1
+    commando1x = 171
+    commando1y = 135
+
+    # Commando 2
+    commando2x = 419
+    commando2y = 145
+
+    # Commando 3
+    commando3x = 733
+    commando3y = 96
+
+    # Commando 4
+    commando4x = 1010
+    commando4y = 135
+
     # 48*25
     screen_width=1200
     # 64*12
@@ -124,6 +140,40 @@ def viewCommando():
              if event.key == pygame.K_RETURN:
                 waiting = False
                 break
+          if pygame.mouse.get_pressed()[0] == True: 
+            screen.blit(titleScreenImage, [120,0])
+            screen.blit(titleScreen, [130,10])
+
+            mousex = pygame.mouse.get_pos()[0] 
+            mousey = pygame.mouse.get_pos()[1] 
+            if mousex > commando1x-30 and mousex < commando1x+30 and mousey > commando1y-30 and mousey < commando1y+30 :
+                
+                commandoName1 = font.render("Commando #1", True, blue)
+                commandoName1Rect = commandoName1.get_rect()
+                screen.blit(commandoName1, [commando1x-25, commando1y+30])
+                pygame.display.update()
+
+            if mousex > commando2x-30 and mousex < commando2x+30 and mousey > commando2y-30 and mousey < commando2y+30 :
+                commandoName2 = font.render("Commando #2", True, blue)
+                commandoName2Rect = commandoName2.get_rect()
+                screen.blit(commandoName2, [commando2x-25, commando2y+30])
+                pygame.display.update()
+
+
+            if mousex > commando3x-30 and mousex < commando3x+30 and mousey > commando3y-30 and mousey < commando3y+30 :
+                commandoName3 = font.render("Commando #3", True, blue)
+                commandoName3Rect = commandoName3.get_rect()
+                screen.blit(commandoName3, [commando3x-25, commando3y+30])
+                pygame.display.update()
+
+
+            if mousex > commando4x-30 and mousex < commando4x+30 and mousey > commando4y-30 and mousey < commando4y+30 :
+                commandoName4 = font.render("Commando #4", True, blue)
+                commandoName4Rect = commandoName4.get_rect()
+                screen.blit(commandoName4, [commando4x-100, commando4y+30])
+                pygame.display.update()
+
+
 
 def selectMission():
 
