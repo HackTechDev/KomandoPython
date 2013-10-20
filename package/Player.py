@@ -7,8 +7,11 @@ from Colour import *
 class Player(pygame.sprite.Sprite):
 
     # Set speed vector
-    change_x=0
-    change_y=0
+    change_x = 0
+    change_y = 0
+
+    # Silent
+    silent = False;
 
     # This is a frame counter used to determing which image to draw
     frame = 0
@@ -31,7 +34,15 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = y
         self.rect.x = x
 
+        self.silent = False
+
         self.footstepsound = pygame.mixer.Sound("sound/footstep.wav")
+
+    def setSilent(self, var):
+        if var == "Silent Cloth":
+            self.silent = True
+        else:
+            self.silent = False
 
     # Change the speed of the player
     def changespeed(self,x,y):
@@ -79,7 +90,8 @@ class Player(pygame.sprite.Sprite):
             # Multiply by 4 because we flip the image every 4 frames
             if self.frame > 2*3:
                 self.frame = 0
-                self.footstepsound.play()
+                if self.silent == False:
+                    self.footstepsound.play()
             # Grab the image, do floor division by 4 because we flip
             # every 4 frames.
             # Frames 0...3 -> image[0]
@@ -94,7 +106,8 @@ class Player(pygame.sprite.Sprite):
             self.frame += 1
             if self.frame > 2*3:
                 self.frame = 0
-                self.footstepsound.play()
+                if self.silent == False:
+                    self.footstepsound.play()
             self.image = self.images[self.frame//3+3]
 
         # Move bottom to top
@@ -102,12 +115,14 @@ class Player(pygame.sprite.Sprite):
             self.frame += 1
             if self.frame > 2*3:
                 self.frame = 0
-                self.footstepsound.play()
+                if self.silent == False:
+                    self.footstepsound.play()
             self.image = self.images[self.frame//3+3+3]
 
         if self.change_x < 0:
             self.frame += 1
             if self.frame > 2*3:
                 self.frame = 0
-                self.footstepsound.play()
+                if self.silent == False:
+                    self.footstepsound.play()
             self.image = self.images[self.frame//3+3+3+3]

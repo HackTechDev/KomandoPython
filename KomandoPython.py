@@ -126,15 +126,21 @@ while gameloop == False:
 
         if event.type == pygame.KEYDOWN:
 
+            if event.key == pygame.K_q:
+                gameloop=True
+
+            # Music
             if event.key == pygame.K_m:
                 if pygame.mixer.music.get_busy():
                     pygame.mixer.music.stop()
                 else:
                     pygame.mixer.music.play()
+            # Sound
+            # Silent Cloth
+            if event.key == pygame.K_s:
+                player.setSilent("Silent Cloth")
 
-            if event.key == pygame.K_q:
-                gameloop=True
-
+            # Change level
             if event.key == pygame.K_n:
                 # Todo: Check the placement of the player on the map
                 for way in way_list:
@@ -157,6 +163,7 @@ while gameloop == False:
                         player.rect.y = (way.toy - 2) * 32
                         newLevel = False;
 
+            # Player movement
             if event.key == pygame.K_LEFT:
                 player.changespeed(-speed, 0)
                 direction = 4
