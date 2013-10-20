@@ -3,6 +3,7 @@ import random
 import sys
 import os
 import webbrowser
+import time
 
 sys.path.append('./package')
 
@@ -80,7 +81,7 @@ def viewMission():
                 break
 
 def viewCommando():
-   # Call this function so the Pygame package can initialize itself
+    # Call this function so the Pygame package can initialize itself
     pygame.init()
  
     # 48*25
@@ -126,7 +127,11 @@ def viewCommando():
 
 def selectMission():
 
-   # Call this function so the Pygame package can initialize itself
+    # France-Paris
+    FranceParisX = 608
+    FranceParisY = 160
+
+    # Call this function so the Pygame package can initialize itself
     pygame.init()
  
     # 48*25
@@ -136,7 +141,7 @@ def selectMission():
     screen=pygame.display.set_mode([screen_width,screen_height])
 
     # Background image
-    titleScreenImage = pygame.image.load("images/fs.jpg").convert()
+    titleScreenImage = pygame.image.load("images/worldmap.png").convert()
 
     # Font
     font = pygame.font.Font(None, 36)
@@ -153,8 +158,8 @@ def selectMission():
 
     titleScreen=font.render("Mission Selection", True, blue)
     titleScreenRect = titleScreen.get_rect()
-    screen.blit(titleScreenImage, [120,0])
-    screen.blit(titleScreen, [130,10])
+    screen.blit(titleScreenImage, [0,20])
+    screen.blit(titleScreen, [20,20])
 
     pygame.display.update()
 
@@ -167,6 +172,17 @@ def selectMission():
              sys.exit()
           elif event.type == pygame.KEYDOWN:
              if event.key == pygame.K_RETURN:
+                waiting = False
+                break
+          if pygame.mouse.get_pressed()[0] == True: 
+            mousex = pygame.mouse.get_pos()[0] 
+            mousey = pygame.mouse.get_pos()[1] 
+            if mousex > FranceParisX-10 and mousex < FranceParisX+10 and mousey > FranceParisY-10 and mousey < FranceParisY+10 :
+                missionName = font.render("France - Paris", True, blue)
+                missionNameRect = missionName.get_rect()
+                screen.blit(missionName, [mousex+10, mousey-10])
+                pygame.display.update()
+                time.sleep(2)
                 waiting = False
                 break
 
