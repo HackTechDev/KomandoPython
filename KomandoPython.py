@@ -2,6 +2,8 @@ import pygame
 import random
 import sys
 import os
+import webbrowser
+
 sys.path.append('./package')
 
 from GraphicSprite import *
@@ -15,24 +17,68 @@ from Way import *
 from array import *
 from Colour import *
 from UserInterface import *
+from lib import ezmenu
 
 """
 Komando Python : Infiltration
 
 """
 
+class Config(object):
+    menu = None
+    menuloop = True
+    watched = 0
+    result = "no game played yet"
+    mission = False
 
-#Main script
-def main():
+def gameQuit():
+    Config.menuloop = False
+    
+def viewMission():
+    print "View Mission"
+    pass
 
-    # Setup mixer to avoid sound lag
+def viewCommando():
+    print "View Commando"
+    pass
+
+def selectMission():
+    print "Select Mission"
+    pass
+
+def gameUrl(url):
+    print "KomandoPython.com"
+    webbrowser.open_new_tab(url)
+
+def makeMenu(pos=0):
+    Config.menu = ezmenu.EzMenu(
+        ["Go to the Mission", gotoMission],
+        ["View Commando", viewCommando],
+        ["Select Mission", selectMission],
+        ["View Current Mission", viewMission],
+        ["Visit Komado Python homepage", lambda: gameUrl("http://KomandoPython.com")],
+        ["Quit Game", gameQuit] )
+    
+    Config.menu.center_at(320, 240)
+
+    #Set the menu font (default is the pygame font)
+    Config.menu.set_font(pygame.font.SysFont("Arial", 32))
+
+    #Set the highlight color to green (default is red)
+    Config.menu.set_highlight_color((255, 255, 0))
+
+    #Set the normal color to white (default is black)
+    Config.menu.set_normal_color((255, 255, 255))
+    Config.menu.option = pos 
+
+def gotoMission():
+    Config.mission = True
+   # Setup mixer to avoid sound lag
     pygame.mixer.pre_init(44100, -16, 2, 2048)
 
     # Call this function so the Pygame package can initialize itself
     pygame.init()
 
-    # Music
-    pygame.mixer.music.load(os.path.join('music', 'an-turr.ogg'))
 
     # Sounds
     shootsound = pygame.mixer.Sound(os.path.join('sound','shoot.wav'))
@@ -44,21 +90,17 @@ def main():
     screen_height=640
     screen=pygame.display.set_mode([screen_width,screen_height])
 
-    way_list = list()
+    # Font
+    font = pygame.font.Font(None, 36)
 
     pygame.display.set_caption('Komando Python : Infiltration')
 
-    background = pygame.Surface(screen.get_size())
-
-    background = background.convert()
-
-    background.fill(black)
 
     # Panel
     image_fnscar = pygame.image.load("images/panel/gun_fnscar.png").convert()
     bar_bottom = pygame.image.load("images/panel/bar_bottom.png").convert()
     bar_right = pygame.image.load("images/panel/bar_right.png").convert()
-    titleScreenImage = pygame.image.load("images/fs.jpg").convert()
+
 
     # Sprites
     player = Player(48, 64)
@@ -77,11 +119,10 @@ def main():
     bullet_list = pygame.sprite.RenderPlain()
 
     # Load level
+    way_list = list()
     currentlevel = Level("01", way_list, ground_list, wall_list, all_sprites_list, item_list)
 
     clock = pygame.time.Clock()
-
-    font = pygame.font.Font(None, 36)
 
     gameloop = False
 
@@ -97,34 +138,7 @@ def main():
 
     debug = False
 
-    # Title screen
-
-    titleScreen=font.render("Komando Python : Infiltration", True, blue)
-    titleScreenRect = titleScreen.get_rect()
-    screen.blit(titleScreenImage, [120,0])
-    screen.blit(titleScreen, [130,10])
-
-    pygame.display.update()
-
-    # Wait for enter to be pressed
-    # The user can also quit
-    waiting = True
-    while waiting:
-       for event in pygame.event.get():
-          if event.type == pygame.QUIT:
-             sys.exit()
-          elif event.type == pygame.KEYDOWN:
-             if event.key == pygame.K_RETURN:
-                waiting = False
-                break
-
-    # play music non-stop
-    pygame.mixer.music.play(-1)
-
-    # Set codename
-    codename = setCodename(screen, "Codename")
-
-    # Main game loop
+   # Main game loop
 
     while gameloop == False:
 
@@ -135,7 +149,8 @@ def main():
             if event.type == pygame.KEYDOWN:
 
                 if event.key == pygame.K_q:
-                    gameloop=True
+                    gameloop = True
+                    Config.mission = False;
 
                 # Music
                 if event.key == pygame.K_m:
@@ -283,6 +298,89 @@ def main():
 
         clock.tick(40)
 
+
+#Main script
+def main():
+
+
+    # Call this function so the Pygame package can initialize itself
+    pygame.init()
+ 
+    # 48*25
+    screen_width=1200
+    # 64*12
+    screen_height=640
+    screen=pygame.display.set_mode([screen_width,screen_height])
+
+    # Background image
+    titleScreenImage = pygame.image.load("images/fs.jpg").convert()
+
+    # Font
+    font = pygame.font.Font(None, 36)
+
+    pygame.display.set_caption('Komando Python : Infiltration')
+
+    background = pygame.Surface(screen.get_size())
+
+    background = background.convert()
+
+    background.fill(black)
+
+    # Music
+    pygame.mixer.music.load(os.path.join('music', 'an-turr.ogg'))
+
+    # Title screen
+
+    titleScreen=font.render("Komando Python : Infiltration", True, blue)
+    titleScreenRect = titleScreen.get_rect()
+    screen.blit(titleScreenImage, [120,0])
+    screen.blit(titleScreen, [130,10])
+
+    pygame.display.update()
+
+    # play music non-stop
+    pygame.mixer.music.play(-1)
+
+    # Wait for enter to be pressed
+    # The user can also quit
+    waiting = True
+    while waiting:
+       for event in pygame.event.get():
+          if event.type == pygame.QUIT:
+             sys.exit()
+          elif event.type == pygame.KEYDOWN:
+             if event.key == pygame.K_RETURN:
+                waiting = False
+                break
+
+    # Set codename
+    codename = setCodename(screen, "Codename")
+
+    # Make menu
+    makeMenu(0)
+
+    while Config.menuloop:
+        events = pygame.event.get()
+
+        #...and update the menu which needs access to those events
+        Config.menu.update(events)
+
+        #Let's quit when the Quit button is pressed
+        for e in events:
+            if e.type == pygame.QUIT:
+                Config.menuloop = False
+                
+            elif e.type == pygame.KEYDOWN:
+                if e.key == pygame.K_ESCAPE:
+                     Config.menuloop = False
+
+        screen.blit(background, (0,0))
+        Config.menu.draw(screen)
+        pygame.display.flip()
+
+#        while Config.mission:
+            
+ 
     # End title screen
 
     titleScreen=font.render("Komando Python : Infiltration", True, blue)

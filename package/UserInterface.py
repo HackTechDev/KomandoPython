@@ -20,7 +20,7 @@ def setCodename(screen, question):
         pygame.time.wait(50)
         for event in pygame.event.get():        
             if event.type == pygame.QUIT:
-                sys.exit()   
+                break   
             elif event.type != pygame.KEYDOWN:
                 continue
             elif event.key == pygame.K_BACKSPACE:
