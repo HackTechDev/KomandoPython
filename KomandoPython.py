@@ -246,9 +246,14 @@ playerMapIdGlobal = 217
 playerPosxGlobal = 48
 playerPosyGlobal = 32
 
+player2MapIdGlobal = 217
+player2PosxGlobal = 96
+player2PosyGlobal = 32
+
+
 def makeMenu(pos = 0):
     Config.menu = ezmenu.EzMenu(
-        ["Go to the Mission", lambda: gotoMission(playerMapIdGlobal, playerPosxGlobal, playerPosyGlobal)],
+        ["Go to the Mission", lambda: gotoMission(playerMapIdGlobal, playerPosxGlobal, playerPosyGlobal, player2MapIdGlobal, player2PosxGlobal, player2PosyGlobal)],
         ["View Commando", viewCommando],
         ["Select Mission", selectMission],
         ["View Current Mission", viewMission],
@@ -294,12 +299,16 @@ def saveMap(mapId, wall_list):
     mapFile.write(mapTmp)
     mapFile.close()
 
-def gotoMission(mapId, playerPosx, playerPosy):
+def gotoMission(playerMapId, playerPosx, playerPosy, player2MapId, player2Posx, player2Posy):
 
     # Global variables
     global playerMapIdGlobal
     global playerPosxGlobal
     global playerPosyGlobal
+
+    global player2MapIdGlobal
+    global player2PosxGlobal
+    global player2PosyGlobal
 
     Config.mission = True
     # Setup mixer to avoid sound lag
@@ -328,11 +337,17 @@ def gotoMission(mapId, playerPosx, playerPosy):
     bar_bottom = pygame.image.load("images/panel/bar_bottom.png").convert()
     bar_right = pygame.image.load("images/panel/bar_right.png").convert()
 
-    # Sprites
+    # Sprites Players
     player = Player(playerPosx, playerPosy)
-    movingsprites = pygame.sprite.RenderPlain()
-    movingsprites.add(player)
+    playerMovingSprites = pygame.sprite.RenderPlain()
+    playerMovingSprites.add(player)
 
+    player2 = Player(player2Posx, player2Posy)
+    player2MovingSprites = pygame.sprite.RenderPlain()
+    player2MovingSprites.add(player2)
+
+
+    # Sprites
     all_sprites_list = pygame.sprite.RenderPlain()
 
     wall_list = pygame.sprite.RenderPlain()
@@ -346,7 +361,7 @@ def gotoMission(mapId, playerPosx, playerPosy):
 
     # Load level
     way_list = list()
-    currentlevel = Level(mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
+    currentlevel = Level(playerMapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
 
     clock = pygame.time.Clock()
 
@@ -361,9 +376,18 @@ def gotoMission(mapId, playerPosx, playerPosy):
     player.life = 100
     player.ammunition = 20
     player.direction = 8
-    player.mapId = mapId
+    player.mapId = playerMapId
     player.score = 0
     player.speed = 4
+
+    player2.name = "Nekrofage"
+    player2.life = 100
+    player2.ammunition = 20
+    player2.direction = 8
+    player2.mapId = player2MapId
+    player2.score = 0
+    player2.speed = 4
+
 
 
 
@@ -377,6 +401,12 @@ def gotoMission(mapId, playerPosx, playerPosy):
                 playerMapIdGlobal = player.mapId
                 playerPosxGlobal = player.rect.x
                 playerPosyGlobal = player.rect.y
+
+                player2MapIdGlobal = player2.mapId
+                player2PosxGlobal = player2.rect.x
+                player2PosyGlobal = player2.rect.y
+
+
 
             # Left mouse click
             if pygame.mouse.get_pressed()[0] == True:
@@ -410,6 +440,11 @@ def gotoMission(mapId, playerPosx, playerPosy):
                     playerPosxGlobal = player.rect.x
                     playerPosyGlobal = player.rect.y
 
+                    player2MapIdGlobal = player2.mapId
+                    player2PosxGlobal = player2.rect.x
+                    player2PosyGlobal = player2.rect.y
+
+
                 # Music
                 if event.key == pygame.K_m:
                     if pygame.mixer.music.get_busy():
@@ -433,6 +468,7 @@ def gotoMission(mapId, playerPosx, playerPosy):
                 #
                 if event.key == pygame.K_w:
                     print "Current player position: " + str(player.mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
+                    print "Current player position: " + str(player2.mapId) + " " + str(player2.rect.x) + " " + str(player2.rect.y)
 
                 # Change level
                 if event.key == pygame.K_n:
@@ -473,7 +509,8 @@ def gotoMission(mapId, playerPosx, playerPosy):
                         newLevel = True;
                         print "Bottom: Move to: " + str(player.mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
 
-                # Player movement
+                # Players movement
+                # Komando1
                 if event.key == pygame.K_LEFT:
                     player.changeSpeed(-player.speed, 0)
                     player.direction = 4
@@ -490,6 +527,26 @@ def gotoMission(mapId, playerPosx, playerPosy):
                     player.changeSpeed(0, player.speed)
                     player.direction = 2
                     newLevel = False
+
+                # Komando2
+                if event.key == pygame.K_j:
+                    player2.changeSpeed(-player2.speed, 0)
+                    player2.direction = 4
+                    newLevel = False
+                if event.key == pygame.K_l:
+                    player2.changeSpeed(player2.speed, 0)
+                    player2.direction = 6
+                    newLevel = False
+                if event.key == pygame.K_i:
+                    player2.changeSpeed(0, -player2.speed)
+                    player2.direction = 8
+                    newLevel = False
+                if event.key == pygame.K_k:
+                    player2.changeSpeed(0, player2.speed)
+                    player2.direction = 2
+                    newLevel = False
+
+
 
                 # Shoot with bullet
                 if event.key == pygame.K_SPACE :
@@ -530,7 +587,19 @@ def gotoMission(mapId, playerPosx, playerPosy):
                 if event.key == pygame.K_DOWN:
                     player.changeSpeed(0,-player.speed)
 
+                if event.key == pygame.K_j:
+                    player2.changeSpeed(player2.speed,0)
+                if event.key == pygame.K_l:
+                    player2.changeSpeed(-player2.speed,0)
+                if event.key == pygame.K_i:
+                    player2.changeSpeed(0,player2.speed)
+                if event.key == pygame.K_k:
+                    player2.changeSpeed(0,-player2.speed)
+
+
         player.update(all_sprites_list)
+
+        player2.update(all_sprites_list)
 
         # Calculate mechanics for each bullet
         for bullet in bullet_list:
@@ -573,7 +642,10 @@ def gotoMission(mapId, playerPosx, playerPosy):
 
         ground_list.draw(screen)
 
-        movingsprites.draw(screen)
+        playerMovingSprites.draw(screen)
+        
+        if(player.mapId == player2.mapId):
+            player2MovingSprites.draw(screen)
 
         all_sprites_list.draw(screen)
 
