@@ -10,7 +10,7 @@ class Level():
     def __init__(self, filename, way_list, ground_list, wall_list, all_sprites_list, item_list):
 
         # Load level parameters
-        file = open("maps/"+filename+"/level.txt", "r")
+        file = open("maps/default/1.l.txt", "r")
         line_list = file.readlines()
         file.close()
 
@@ -23,7 +23,7 @@ class Level():
                 way_list.append(ll)
 
         # Load background
-        file = open("maps/"+filename+"/background.txt", "r")
+        file = open("maps/"+str(filename)+".b.txt", "r")
         line_list = file.readlines()
         file.close()
 
@@ -33,8 +33,11 @@ class Level():
             line = line[:-1]
             tiles = line.split(':')
             for tile in tiles:
-                if tile == "01":
+                if tile == "00":
                     ground = Ground("brown_paving.png", posx, posy, 32, 32)
+                    ground_list.add(ground)
+                if tile == "01":
+                    ground = Ground("floors_3.png", posx, posy, 32, 32)
                     ground_list.add(ground)
                 if tile == "02":
                     ground = Ground("floors_3.png", posx, posy, 32, 32)
@@ -44,7 +47,7 @@ class Level():
             posx = 0 
             
         # Load wall
-        file = open("maps/"+filename+"/wall.txt", "r")
+        file = open("maps/"+str(filename)+".w.txt", "r")
         line_list = file.readlines()
         file.close()
 
@@ -63,7 +66,7 @@ class Level():
             posx = 0 
             
         # Load item
-        file = open("maps/"+filename+"/item.txt", "r")
+        file = open("maps/default/1.i.txt", "r")
         line_list = file.readlines()
         file.close()
 

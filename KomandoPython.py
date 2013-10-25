@@ -105,9 +105,9 @@ def viewCommando():
     commando4y = 135
 
     # 48*25
-    screen_width=1200
+    screen_width = 1200
     # 64*12
-    screen_height=640
+    screen_height = 640
     screen=pygame.display.set_mode([screen_width,screen_height])
 
     # Background image
@@ -307,9 +307,12 @@ def gotoMission():
     # List of each bullet
     bullet_list = pygame.sprite.RenderPlain()
 
+    # Map Id
+    mapId = 217
+
     # Load level
     way_list = list()
-    currentlevel = Level("01", way_list, ground_list, wall_list, all_sprites_list, item_list)
+    currentlevel = Level(mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
 
     clock = pygame.time.Clock()
 
@@ -327,7 +330,10 @@ def gotoMission():
 
     debug = False
 
-   # Main game loop
+    halfWidthPlayer  = 24
+    halfHeightPlayer = 32
+
+    # Main game loop
 
     while gameloop == False:
 
@@ -354,40 +360,61 @@ def gotoMission():
 
                 # Change level
                 if event.key == pygame.K_n:
-                    # Todo: Check the placement of the player on the map
-                    for way in way_list:
-                        if debug == True:
-                            print "****"
-                            print "from: " + str(way.fromx) + " " + str(way.fromy)
-                            print "to: " + str(way.tox) + " " + str(way.toy)
-                            print "level: " + way.level
-                            print "player: " + str(player.rect.x) + " " + str(player.rect.y)
-                            print "player: " + str((player.rect.x+24)/32) + " " + str((player.rect.y + 64)/32)
+                    print "Current player position: " + str(mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
 
-                        if ((player.rect.x+24)/32) == way.fromx and ((player.rect.y + 64)/32) == way.fromy:
-                            newLevel = True;
-                            break;
+                    # Left border
+                    if player.rect.x <= -(halfWidthPlayer) and newLevel == False:
+                        mapId = mapId - 1
+                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list)
+                        nextlevel = Level(mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
+                        player.rect.x = (32 * 30) - halfWidthPlayer
+                        newLevel = True;
+                        print "Left: Move to: " + str(mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
+                        
+                    # Right Border
+                    if player.rect.x >= (30 * 32) - halfWidthPlayer and newLevel == False:
+                        mapId = mapId + 1
+                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list)
+                        nextlevel = Level(mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
+                        player.rect.x = -(halfWidthPlayer)
+                        newLevel = True;
+                        print "Right: Move to: " + str(mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
 
-                    if newLevel == True:
-                            currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list)
-                            nextlevel = Level(way.level, way_list, ground_list, wall_list, all_sprites_list, item_list)
-                            player.rect.x = way.tox  * 32
-                            player.rect.y = (way.toy - 2) * 32
-                            newLevel = False;
+                    # Top border
+                    if player.rect.y <= -(halfHeightPlayer) and newLevel == False:
+                        mapId = mapId - 21 
+                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list)
+                        nextlevel = Level(mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
+                        player.rect.y = (32*15) - halfHeightPlayer
+                        newLevel = True;
+                        print "Top: Move to: " + str(mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
+
+                    # Bottom Border
+                    if player.rect.y >= (32*15) - halfHeightPlayer and newLevel == False:
+                        mapId = mapId + 21
+                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list)
+                        nextlevel = Level(mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
+                        player.rect.y = -(halfHeightPlayer)
+                        newLevel = True;
+                        print "Bottom: Move to: " + str(mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
 
                 # Player movement
                 if event.key == pygame.K_LEFT:
                     player.changespeed(-speed, 0)
                     direction = 4
+                    newLevel = False
                 if event.key == pygame.K_RIGHT:
                     player.changespeed(speed, 0)
                     direction = 6
+                    newLevel = False
                 if event.key == pygame.K_UP:
                     player.changespeed(0, -speed)
                     direction = 8
+                    newLevel = False
                 if event.key == pygame.K_DOWN:
                     player.changespeed(0, speed)
                     direction = 2
+                    newLevel = False
                 if event.key == pygame.K_SPACE :
                     if ammunition > 0:
                         shootsound.play()
@@ -534,7 +561,7 @@ def main():
     pygame.display.update()
 
     # play music non-stop
-    pygame.mixer.music.play(-1)
+    #pygame.mixer.music.play(-1)
 
     # Wait for enter to be pressed
     # The user can also quit

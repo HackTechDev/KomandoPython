@@ -55,9 +55,12 @@ class Player(pygame.sprite.Sprite):
         old_x=self.rect.x
         new_x=old_x+self.change_x
         self.rect.x = new_x
+    
+        halfWidthPlayer  = 24
+        halfheightPlayer = 32
 
         # Check the right and left border of the map
-        if self.rect.x  < 0 or self.rect.x >= ((30*32)-42):
+        if self.rect.x  < -(halfWidthPlayer) or self.rect.x > ((30*32)-halfWidthPlayer):
             self.rect.x = old_x
 
         # Did this update cause us to hit a wall?
@@ -71,7 +74,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = new_y
 
         # Check the up and bottom border of the map
-        if self.rect.y  < -32 or self.rect.y >= ((14*32)-32):
+        if self.rect.y  < -(halfheightPlayer) or self.rect.y > ((15*32)-halfheightPlayer):
             self.rect.y = old_y
 
         # Did this update cause us to hit a wall?
