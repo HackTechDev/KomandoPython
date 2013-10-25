@@ -241,13 +241,13 @@ def gameUrl(url):
     webbrowser.open_new_tab(url)
 
 # Global variable declaration
-mapIdGlobal = 217
+playerMapIdGlobal = 217
 playerPosxGlobal = 48
 playerPosyGlobal = 32
 
 def makeMenu(pos = 0):
     Config.menu = ezmenu.EzMenu(
-        ["Go to the Mission", lambda: gotoMission(mapIdGlobal, playerPosxGlobal, playerPosyGlobal)],
+        ["Go to the Mission", lambda: gotoMission(playerMapIdGlobal, playerPosxGlobal, playerPosyGlobal)],
         ["View Commando", viewCommando],
         ["Select Mission", selectMission],
         ["View Current Mission", viewMission],
@@ -296,19 +296,16 @@ def saveMap(mapId, wall_list):
 def gotoMission(mapId, playerPosx, playerPosy):
 
     # Global variables
-
-    global mapIdGlobal
+    global playerMapIdGlobal
     global playerPosxGlobal
     global playerPosyGlobal
 
-
     Config.mission = True
-   # Setup mixer to avoid sound lag
+    # Setup mixer to avoid sound lag
     pygame.mixer.pre_init(44100, -16, 2, 2048)
 
     # Call this function so the Pygame package can initialize itself
     pygame.init()
-
 
     # Sounds
     shootsound = pygame.mixer.Sound(os.path.join('sound','shoot.wav'))
@@ -376,7 +373,7 @@ def gotoMission(mapId, playerPosx, playerPosy):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 gameloop=True
-                mapIdGlobal = mapId
+                playerMapIdGlobal = mapId
                 playerPosxGlobal = player.rect.x
                 playerPosyGlobal = player.rect.y
 
@@ -408,7 +405,7 @@ def gotoMission(mapId, playerPosx, playerPosy):
                 if event.key == pygame.K_q:
                     gameloop = True
                     Config.mission = False;
-                    mapIdGlobal = mapId
+                    playerMapIdGlobal = mapId
                     playerPosxGlobal = player.rect.x
                     playerPosyGlobal = player.rect.y
 
