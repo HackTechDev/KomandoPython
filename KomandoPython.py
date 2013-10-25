@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pygame
 import random
 import sys
@@ -297,12 +298,10 @@ def gotoMission(mapId, playerPosx, playerPosy):
 
     pygame.display.set_caption('Komando Python : Infiltration')
 
-
     # Panel
     image_fnscar = pygame.image.load("images/panel/gun_fnscar.png").convert()
     bar_bottom = pygame.image.load("images/panel/bar_bottom.png").convert()
     bar_right = pygame.image.load("images/panel/bar_right.png").convert()
-
 
     # Sprites
     player = Player(playerPosx, playerPosy)
@@ -397,9 +396,38 @@ def gotoMission(mapId, playerPosx, playerPosy):
                 if event.key == pygame.K_s:
                     player.setSilent("Silent Cloth")
 
-
+                # Debug
                 if event.key == pygame.K_d:
                     print "Debug:"
+
+                 # Debug
+                if event.key == pygame.K_s:
+                    print "Save map"
+                    mapArr = [[0 for col in range(30)] for row in range(15)] 
+
+                    for wall in wall_list:
+                        mapArr[wall.y/32][wall.x/32] = 1
+                    
+                    line = ""
+                    count = 0
+                    mapTmp = ""
+                    for row in mapArr:
+                        for col in row:
+                            if col == 0:
+                                line = line + "00:"
+                            if col == 1:
+                                line = line + "01:"
+                            if count == 29:
+                                mapTmp = mapTmp + line[:-1] + "\n"
+                                line = ""
+                                count = 0
+                            else:
+                                count = count + 1
+
+                    #print mapTmp
+                    mapFile = open("maps/" + str(mapId) + ".w.txt", "w")
+                    mapFile.write(mapTmp)
+                    mapFile.close()
 
                 # Change level
                 if event.key == pygame.K_n:
