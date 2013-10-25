@@ -6,6 +6,13 @@ from Colour import *
 # Todo: Add more comments
 class Player(pygame.sprite.Sprite):
 
+    name = ""
+    
+    life = 100
+
+    speed = 4
+    score = 0
+
     # Set speed vector
     change_x = 0
     change_y = 0
@@ -15,6 +22,13 @@ class Player(pygame.sprite.Sprite):
 
     # This is a frame counter used to determing which image to draw
     frame = 0
+
+    direction = 0
+
+    mapId = 0
+
+    halfWidthPlayer  = 24
+    halfHeightPlayer = 32
 
     def __init__(self,x,y):
         pygame.sprite.Sprite.__init__(self)
@@ -45,7 +59,7 @@ class Player(pygame.sprite.Sprite):
             self.silent = False
 
     # Change the speed of the player
-    def changespeed(self,x,y):
+    def changeSpeed(self,x,y):
         self.change_x+=x
         self.change_y+=y
 

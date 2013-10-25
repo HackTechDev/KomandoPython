@@ -240,7 +240,8 @@ def gameUrl(url):
     print "KomandoPython.com"
     webbrowser.open_new_tab(url)
 
-# Global variable declaration
+# Global variable declaration and initialization
+
 playerMapIdGlobal = 217
 playerPosxGlobal = 48
 playerPosyGlobal = 32
@@ -351,20 +352,20 @@ def gotoMission(mapId, playerPosx, playerPosy):
 
     gameloop = False
 
-    speed = 4
-
-    score = 0
-
-    ammunition = 20
-
-    direction = 8
-
     newLevel = False
 
     debug = False
 
-    halfWidthPlayer  = 24
-    halfHeightPlayer = 32
+    # Player Characteristic
+    player.name = "LeSanglier"
+    player.life = 100
+    player.ammunition = 20
+    player.direction = 8
+    player.mapId = mapId
+    player.score = 0
+    player.speed = 4
+
+
 
     # Main game loop
 
@@ -373,7 +374,7 @@ def gotoMission(mapId, playerPosx, playerPosy):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 gameloop=True
-                playerMapIdGlobal = mapId
+                playerMapIdGlobal = player.mapId
                 playerPosxGlobal = player.rect.x
                 playerPosyGlobal = player.rect.y
 
@@ -405,7 +406,7 @@ def gotoMission(mapId, playerPosx, playerPosy):
                 if event.key == pygame.K_q:
                     gameloop = True
                     Config.mission = False;
-                    playerMapIdGlobal = mapId
+                    playerMapIdGlobal = player.mapId
                     playerPosxGlobal = player.rect.x
                     playerPosyGlobal = player.rect.y
 
@@ -427,86 +428,89 @@ def gotoMission(mapId, playerPosx, playerPosy):
                 # Save current map
                 if event.key == pygame.K_s:
                     print "Save map"
-                    saveMap(mapId, wall_list)
+                    saveMap(player.mapId, wall_list)
+
+                #
+                if event.key == pygame.K_w:
+                    print "Current player position: " + str(player.mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
 
                 # Change level
                 if event.key == pygame.K_n:
-                    print "Current player position: " + str(mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
 
                     # Left border
-                    if player.rect.x <= -(halfWidthPlayer) and newLevel == False:
-                        mapId = mapId - 1
+                    if player.rect.x <= -(player.halfWidthPlayer) and newLevel == False:
+                        player.mapId = player.mapId - 1
                         currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list)
-                        nextlevel = Level(mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
-                        player.rect.x = (32 * 30) - halfWidthPlayer
+                        nextlevel = Level(player.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
+                        player.rect.x = (32 * 30) - player.halfWidthPlayer
                         newLevel = True;
-                        #print "Left: Move to: " + str(mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
+                        print "Left: Move to: " + str(player.mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
                         
                     # Right Border
-                    if player.rect.x >= (30 * 32) - halfWidthPlayer and newLevel == False:
-                        mapId = mapId + 1
+                    if player.rect.x >= (30 * 32) - player.halfWidthPlayer and newLevel == False:
+                        player.mapId = player.mapId + 1
                         currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list)
-                        nextlevel = Level(mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
-                        player.rect.x = -(halfWidthPlayer)
+                        nextlevel = Level(player.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
+                        player.rect.x = -(player.halfWidthPlayer)
                         newLevel = True;
-                        #print "Right: Move to: " + str(mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
+                        print "Right: Move to: " + str(player.mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
 
                     # Top border
-                    if player.rect.y <= -(halfHeightPlayer) and newLevel == False:
-                        mapId = mapId - 21 
+                    if player.rect.y <= -(player.halfHeightPlayer) and newLevel == False:
+                        player.mapId = player.mapId - 21 
                         currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list)
-                        nextlevel = Level(mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
-                        player.rect.y = (32*15) - halfHeightPlayer
+                        nextlevel = Level(player.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
+                        player.rect.y = (32*15) - player.halfHeightPlayer
                         newLevel = True;
-                        #print "Top: Move to: " + str(mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
+                        print "Top: Move to: " + str(player.mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
 
                     # Bottom Border
-                    if player.rect.y >= (32*15) - halfHeightPlayer and newLevel == False:
-                        mapId = mapId + 21
+                    if player.rect.y >= (32*15) - player.halfHeightPlayer and newLevel == False:
+                        player.mapId = player.mapId + 21
                         currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list)
-                        nextlevel = Level(mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
-                        player.rect.y = -(halfHeightPlayer)
+                        nextlevel = Level(player.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
+                        player.rect.y = -(player.halfHeightPlayer)
                         newLevel = True;
-                        #print "Bottom: Move to: " + str(mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
+                        print "Bottom: Move to: " + str(player.mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
 
                 # Player movement
                 if event.key == pygame.K_LEFT:
-                    player.changespeed(-speed, 0)
-                    direction = 4
+                    player.changeSpeed(-player.speed, 0)
+                    player.direction = 4
                     newLevel = False
                 if event.key == pygame.K_RIGHT:
-                    player.changespeed(speed, 0)
-                    direction = 6
+                    player.changeSpeed(player.speed, 0)
+                    player.direction = 6
                     newLevel = False
                 if event.key == pygame.K_UP:
-                    player.changespeed(0, -speed)
-                    direction = 8
+                    player.changeSpeed(0, -player.speed)
+                    player.direction = 8
                     newLevel = False
                 if event.key == pygame.K_DOWN:
-                    player.changespeed(0, speed)
-                    direction = 2
+                    player.changeSpeed(0, player.speed)
+                    player.direction = 2
                     newLevel = False
 
                 # Shoot with bullet
                 if event.key == pygame.K_SPACE :
-                    if ammunition > 0:
+                    if player.ammunition > 0:
                         shootsound.play()
-                        if direction == 8:
+                        if player.direction == 8:
                             bullet = BulletVertical()
                             bullet.direction = 8
                             bullet.rect.x = player.rect.x + 24
                             bullet.rect.y = player.rect.y
-                        if direction == 6:
+                        if player.direction == 6:
                             bullet = BulletHorizontal()
                             bullet.direction = 6
                             bullet.rect.x = player.rect.x + 48
                             bullet.rect.y = player.rect.y + 32
-                        if direction == 4:
+                        if player.direction == 4:
                             bullet = BulletHorizontal()
                             bullet.direction = 4
                             bullet.rect.x = player.rect.x 
                             bullet.rect.y = player.rect.y + 32
-                        if direction == 2:
+                        if player.direction == 2:
                             bullet = BulletVertical()
                             bullet.direction = 2
                             bullet.rect.x = player.rect.x + 24
@@ -514,17 +518,17 @@ def gotoMission(mapId, playerPosx, playerPosy):
 
                         all_sprites_list.add(bullet)
                         bullet_list.add(bullet)
-                        ammunition -=1
+                        player.ammunition -=1
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT:
-                    player.changespeed(speed,0)
+                    player.changeSpeed(player.speed,0)
                 if event.key == pygame.K_RIGHT:
-                    player.changespeed(-speed,0)
+                    player.changeSpeed(-player.speed,0)
                 if event.key == pygame.K_UP:
-                    player.changespeed(0,speed)
+                    player.changeSpeed(0,player.speed)
                 if event.key == pygame.K_DOWN:
-                    player.changespeed(0,-speed)
+                    player.changeSpeed(0,-player.speed)
 
         player.update(all_sprites_list)
 
@@ -552,13 +556,13 @@ def gotoMission(mapId, playerPosx, playerPosy):
             # See if it hit a item
             item_hit_list = pygame.sprite.spritecollide(bullet, item_list, True)
 
-            # For each item hit, remove the bullet and add to the score
+            # For each item hit, remove the bullet and add to the player.score
             for item in item_hit_list:
                 print "Hit: item"
                 boomsound.play()
                 bullet_list.remove(bullet)
                 all_sprites_list.remove(bullet)
-                score += 1
+                player.score += 1
 
             # Remove the bullet if it flies up off the screen
             if bullet.rect.x > (30*32) or bullet.rect.x < 0 or bullet.rect.y > (15*32) or bullet.rect.y < 0:
@@ -574,10 +578,10 @@ def gotoMission(mapId, playerPosx, playerPosy):
         all_sprites_list.draw(screen)
 
         # Panel
-        textScore=font.render("Score : "+str(score), True, blue)
+        textScore=font.render("Score : "+str(player.score), True, blue)
         screen.blit(textScore, [0, 32*16])
 
-        textAmmunition=font.render("Ammunition : "+str(ammunition), True, blue)
+        textAmmunition=font.render("Ammunition : "+str(player.ammunition), True, blue)
         screen.blit(textAmmunition, [0, 32*17])
 
         screen.blit(bar_bottom, [0,480])
