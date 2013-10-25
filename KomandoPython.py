@@ -354,8 +354,31 @@ def gotoMission(mapId, playerPosx, playerPosy):
                 playerPosxGlobal = player.rect.x
                 playerPosyGlobal = player.rect.y
 
-            if event.type == pygame.KEYDOWN:
+            # Left mouse click
+            if pygame.mouse.get_pressed()[0] == True:
+                mousex = pygame.mouse.get_pos()[0]
+                mousey = pygame.mouse.get_pos()[1]
+                #print str(mousex) + " " +  str(mousey)
+                #print str(player.rect.x+24) + " " + str(player.rect.y+32)
+                for wall in wall_list:
+                    #print "wall: " + str(wall.x/32) + " " + str(wall.y/32)
+                    # Delete wall
+                    if( mousex > wall.x and mousex < wall.x+32 and  mousey > wall.y and mousey < wall.y+32):
+                        print "Delete wall" 
+                        wall_list.remove(wall)
+                        all_sprites_list.remove(wall)
 
+            # Right mouse click
+            if pygame.mouse.get_pressed()[2] == True:        
+                print "Add wall"
+                mousex = pygame.mouse.get_pos()[0]
+                mousey = pygame.mouse.get_pos()[1]
+                print str((mousex ) ) + " " + str( (mousey ) ) + " " + str(mousex - (mousex % 32) ) + " " + str( mousey-(mousey % 32) )
+                wall = Wall("int_wall_bricks.png", (mousex - (mousex % 32)) / 32, (mousey-(mousey % 32)) / 32, 32, 32)
+                wall_list.add(wall)
+                all_sprites_list.add(wall)
+                
+            if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     gameloop = True
                     Config.mission = False;
@@ -377,8 +400,6 @@ def gotoMission(mapId, playerPosx, playerPosy):
 
                 if event.key == pygame.K_d:
                     print "Debug:"
-                    for item in item_list:
-                        print item
 
                 # Change level
                 if event.key == pygame.K_n:
@@ -437,6 +458,8 @@ def gotoMission(mapId, playerPosx, playerPosy):
                     player.changespeed(0, speed)
                     direction = 2
                     newLevel = False
+
+                # Shoot with bullet
                 if event.key == pygame.K_SPACE :
                     if ammunition > 0:
                         shootsound.play()

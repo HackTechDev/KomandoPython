@@ -9,6 +9,10 @@ class Level():
     # Constructor function
     def __init__(self, filename, way_list, ground_list, wall_list, all_sprites_list, item_list):
 
+        print "*********"
+        print "* Level *"
+        print "*********"
+
         # Load ways
         print "Load: ways"
         file = open("maps/default/1.w.txt", "r")
@@ -64,7 +68,7 @@ class Level():
                     wall = Wall("int_wall_bricks.png", posx, posy, 32, 32)
                     wall_list.add(wall)
                     all_sprites_list.add(wall)
-                    print "Add: wall " + str(posx) + " " + str(posy)
+                    #print "Add: wall " + str(posx) + " " + str(posy)
                 posx = posx + 1
             posy = posy + 1
             posx = 0 
