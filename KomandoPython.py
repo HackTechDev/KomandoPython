@@ -266,6 +266,33 @@ def makeMenu(pos = 0):
     Config.menu.set_normal_color((255, 255, 255))
     Config.menu.option = pos 
 
+def saveMap(mapId, wall_list):
+    mapArr = [[0 for col in range(30)] for row in range(15)]
+
+    for wall in wall_list:
+        mapArr[wall.y/32][wall.x/32] = 1
+
+    line = ""
+    count = 0
+    mapTmp = ""
+    for row in mapArr:
+        for col in row:
+            if col == 0:
+                line = line + "00:"
+            if col == 1:
+                line = line + "01:"
+            if count == 29:
+                mapTmp = mapTmp + line[:-1] + "\n"
+                line = ""
+                count = 0
+            else:
+                count = count + 1
+
+    #print mapTmp
+    mapFile = open("maps/" + str(mapId) + ".w.txt", "w")
+    mapFile.write(mapTmp)
+    mapFile.close()
+
 def gotoMission(mapId, playerPosx, playerPosy):
 
     # Global variables
@@ -400,34 +427,10 @@ def gotoMission(mapId, playerPosx, playerPosy):
                 if event.key == pygame.K_d:
                     print "Debug:"
 
-                 # Debug
+                # Save current map
                 if event.key == pygame.K_s:
                     print "Save map"
-                    mapArr = [[0 for col in range(30)] for row in range(15)] 
-
-                    for wall in wall_list:
-                        mapArr[wall.y/32][wall.x/32] = 1
-                    
-                    line = ""
-                    count = 0
-                    mapTmp = ""
-                    for row in mapArr:
-                        for col in row:
-                            if col == 0:
-                                line = line + "00:"
-                            if col == 1:
-                                line = line + "01:"
-                            if count == 29:
-                                mapTmp = mapTmp + line[:-1] + "\n"
-                                line = ""
-                                count = 0
-                            else:
-                                count = count + 1
-
-                    #print mapTmp
-                    mapFile = open("maps/" + str(mapId) + ".w.txt", "w")
-                    mapFile.write(mapTmp)
-                    mapFile.close()
+                    saveMap(mapId, wall_list)
 
                 # Change level
                 if event.key == pygame.K_n:
