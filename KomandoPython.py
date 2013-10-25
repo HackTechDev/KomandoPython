@@ -239,9 +239,14 @@ def gameUrl(url):
     print "KomandoPython.com"
     webbrowser.open_new_tab(url)
 
-def makeMenu(pos=0):
+# Global variable declaration
+mapIdGlobal = 217
+playerPosxGlobal = 48
+playerPosyGlobal = 32
+
+def makeMenu(pos = 0):
     Config.menu = ezmenu.EzMenu(
-        ["Go to the Mission", gotoMission],
+        ["Go to the Mission", lambda: gotoMission(mapIdGlobal, playerPosxGlobal, playerPosyGlobal)],
         ["View Commando", viewCommando],
         ["Select Mission", selectMission],
         ["View Current Mission", viewMission],
@@ -260,7 +265,15 @@ def makeMenu(pos=0):
     Config.menu.set_normal_color((255, 255, 255))
     Config.menu.option = pos 
 
-def gotoMission():
+def gotoMission(mapId, playerPosx, playerPosy):
+
+    # Global variables
+
+    global mapIdGlobal
+    global playerPosxGlobal
+    global playerPosyGlobal
+
+
     Config.mission = True
    # Setup mixer to avoid sound lag
     pygame.mixer.pre_init(44100, -16, 2, 2048)
@@ -292,7 +305,7 @@ def gotoMission():
 
 
     # Sprites
-    player = Player(48, 64)
+    player = Player(playerPosx, playerPosy)
     movingsprites = pygame.sprite.RenderPlain()
     movingsprites.add(player)
 
@@ -306,9 +319,6 @@ def gotoMission():
      
     # List of each bullet
     bullet_list = pygame.sprite.RenderPlain()
-
-    # Map Id
-    mapId = 217
 
     # Load level
     way_list = list()
@@ -340,12 +350,18 @@ def gotoMission():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 gameloop=True
+                mapIdGlobal = mapId
+                playerPosxGlobal = player.rect.x
+                playerPosyGlobal = player.rect.y
 
             if event.type == pygame.KEYDOWN:
 
                 if event.key == pygame.K_q:
                     gameloop = True
                     Config.mission = False;
+                    mapIdGlobal = mapId
+                    playerPosxGlobal = player.rect.x
+                    playerPosyGlobal = player.rect.y
 
                 # Music
                 if event.key == pygame.K_m:
@@ -358,6 +374,12 @@ def gotoMission():
                 if event.key == pygame.K_s:
                     player.setSilent("Silent Cloth")
 
+
+                if event.key == pygame.K_d:
+                    print "Debug:"
+                    for item in item_list:
+                        print item
+
                 # Change level
                 if event.key == pygame.K_n:
                     print "Current player position: " + str(mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
@@ -369,7 +391,7 @@ def gotoMission():
                         nextlevel = Level(mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
                         player.rect.x = (32 * 30) - halfWidthPlayer
                         newLevel = True;
-                        print "Left: Move to: " + str(mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
+                        #print "Left: Move to: " + str(mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
                         
                     # Right Border
                     if player.rect.x >= (30 * 32) - halfWidthPlayer and newLevel == False:
@@ -378,7 +400,7 @@ def gotoMission():
                         nextlevel = Level(mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
                         player.rect.x = -(halfWidthPlayer)
                         newLevel = True;
-                        print "Right: Move to: " + str(mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
+                        #print "Right: Move to: " + str(mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
 
                     # Top border
                     if player.rect.y <= -(halfHeightPlayer) and newLevel == False:
@@ -387,7 +409,7 @@ def gotoMission():
                         nextlevel = Level(mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
                         player.rect.y = (32*15) - halfHeightPlayer
                         newLevel = True;
-                        print "Top: Move to: " + str(mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
+                        #print "Top: Move to: " + str(mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
 
                     # Bottom Border
                     if player.rect.y >= (32*15) - halfHeightPlayer and newLevel == False:
@@ -396,7 +418,7 @@ def gotoMission():
                         nextlevel = Level(mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
                         player.rect.y = -(halfHeightPlayer)
                         newLevel = True;
-                        print "Bottom: Move to: " + str(mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
+                        #print "Bottom: Move to: " + str(mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
 
                 # Player movement
                 if event.key == pygame.K_LEFT:

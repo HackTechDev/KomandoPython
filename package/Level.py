@@ -9,8 +9,9 @@ class Level():
     # Constructor function
     def __init__(self, filename, way_list, ground_list, wall_list, all_sprites_list, item_list):
 
-        # Load level parameters
-        file = open("maps/default/1.l.txt", "r")
+        # Load ways
+        print "Load: ways"
+        file = open("maps/default/1.w.txt", "r")
         line_list = file.readlines()
         file.close()
 
@@ -23,6 +24,7 @@ class Level():
                 way_list.append(ll)
 
         # Load background
+        print "Load: background"
         file = open("maps/"+str(filename)+".b.txt", "r")
         line_list = file.readlines()
         file.close()
@@ -47,6 +49,7 @@ class Level():
             posx = 0 
             
         # Load wall
+        print "Load: wall"
         file = open("maps/"+str(filename)+".w.txt", "r")
         line_list = file.readlines()
         file.close()
@@ -66,6 +69,7 @@ class Level():
             posx = 0 
             
         # Load item
+        print "Load: item"
         file = open("maps/default/1.i.txt", "r")
         line_list = file.readlines()
         file.close()
