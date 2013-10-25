@@ -64,6 +64,7 @@ class Level():
                     wall = Wall("int_wall_bricks.png", posx, posy, 32, 32)
                     wall_list.add(wall)
                     all_sprites_list.add(wall)
+                    print "Add: wall " + str(posx) + " " + str(posy)
                 posx = posx + 1
             posy = posy + 1
             posx = 0 
@@ -84,6 +85,7 @@ class Level():
                     item = Item("button.png", posx, posy, 32, 32)
                     item_list.add(item)
                     all_sprites_list.add(item)
+                    print "    Add: button" 
                 posx = posx + 1
             posy = posy + 1
             posx = 0 
@@ -102,4 +104,4 @@ class Level():
             ground_list.remove(ground)
 
         for wall in wall_list:
-            wall_list.remove(ground)
+            wall_list.remove(wall)

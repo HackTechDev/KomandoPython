@@ -493,6 +493,7 @@ def gotoMission(mapId, playerPosx, playerPosy):
             # See if it hit a wall
 
             if pygame.sprite.spritecollide(bullet, wall_list, False):
+                print "Hit: wall"
                 boomsound.play()
                 bullet_list.remove(bullet)
                 all_sprites_list.remove(bullet)
@@ -502,6 +503,7 @@ def gotoMission(mapId, playerPosx, playerPosy):
 
             # For each item hit, remove the bullet and add to the score
             for item in item_hit_list:
+                print "Hit: item"
                 boomsound.play()
                 bullet_list.remove(bullet)
                 all_sprites_list.remove(bullet)
