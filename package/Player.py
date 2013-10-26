@@ -47,10 +47,15 @@ class Player(pygame.sprite.Sprite):
         print "Initialization " + self.name
         f = open("player/" + self.name + ".txt", "r")
         for line in f:
-            val1, val2, val3 = line.split(":") 
+            val1, val2, val3, val4, val5, val6, val7, val8  = line.split(":") 
             self.mapId = int(val1)
             self.x = int(val2)
             self.y = int(val3)
+            self.life = int(val4)
+            self.ammunition = int(val5)
+            self.direction = int(val6)
+            self.score = int(val7)
+            self.speed = int(val8)
 
         # Number of sprite + 1 = 13
         for i in range(1,13):

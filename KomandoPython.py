@@ -326,20 +326,6 @@ def gotoMission(player, player2):
     player1 = Player("player1")
     player2 = Player("player2")
 
-    # Player Characteristic
-    player1.life = 100
-    player1.ammunition = 20
-    player1.direction = 8
-    player1.score = 0
-    player1.speed = 4
-
-    player2.life = 100
-    player2.ammunition = 20
-    player2.direction = 8
-    player2.score = 0
-    player2.speed = 4
-
-
     player1MovingSprites = pygame.sprite.RenderPlain()
     player1MovingSprites.add(player1)
     player2MovingSprites = pygame.sprite.RenderPlain()
@@ -409,11 +395,13 @@ def gotoMission(player, player2):
                     gameloop = True
                     Config.mission = False;
                     f = open("player/player1.txt", "w")
-                    f.write(str(player1.mapId) + ":" + str(player1.rect.x) + ":" + str(player1.rect.y))
+                    f.write(str(player1.mapId) + ":" + str(player1.rect.x) + ":" + str(player1.rect.y) + ":" + 
+                            str(player1.life) + ":" + str(player1.ammunition) + ":" + str(player1.direction) + ":" + str(player1.score) + ":" + str(player1.speed))
                     f.close()
 
                     f = open("player/player2.txt", "w")
-                    f.write(str(player2.mapId) + ":" + str(player2.rect.x) + ":" + str(player2.rect.y))
+                    f.write(str(player2.mapId) + ":" + str(player2.rect.x) + ":" + str(player2.rect.y) + ":" + 
+                            str(player2.life) + ":" + str(player2.ammunition) + ":" + str(player2.direction) + ":" + str(player2.score) + ":" + str(player2.speed))
                     f.close()
 
                 # Music
