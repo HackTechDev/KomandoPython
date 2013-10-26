@@ -30,13 +30,13 @@ class Player(pygame.sprite.Sprite):
     halfWidthPlayer  = 24
     halfHeightPlayer = 32
 
-    def __init__(self,x,y):
+    def __init__(self, name, x, y):
         pygame.sprite.Sprite.__init__(self)
         self.images=[]
 
         # Number of sprite + 1 = 13
         for i in range(1,13):
-            img = pygame.image.load("sprites/player/player"+str(i)+".png").convert_alpha()
+            img = pygame.image.load("sprites/player/"+ name +"/player"+str(i)+".png").convert_alpha()
             img.set_colorkey(white)
             self.images.append(img)
 

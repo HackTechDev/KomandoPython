@@ -338,11 +338,11 @@ def gotoMission(playerMapId, playerPosx, playerPosy, player2MapId, player2Posx, 
     bar_right = pygame.image.load("images/panel/bar_right.png").convert()
 
     # Sprites Players
-    player = Player(playerPosx, playerPosy)
+    player = Player("player1", playerPosx, playerPosy)
     playerMovingSprites = pygame.sprite.RenderPlain()
     playerMovingSprites.add(player)
 
-    player2 = Player(player2Posx, player2Posy)
+    player2 = Player("player2", player2Posx, player2Posy)
     player2MovingSprites = pygame.sprite.RenderPlain()
     player2MovingSprites.add(player2)
 
