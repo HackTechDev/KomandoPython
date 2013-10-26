@@ -41,16 +41,16 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, name):
         pygame.sprite.Sprite.__init__(self)
         self.images=[]
+    
+        self.name = name
 
-        # Init positions of each player
-        if name == "player1" :
-            self.x = 48
-            self.y = 32
-            self.mapId = 217
-        if name == "player2":
-            self.x = 96
-            self.y = 32
-            self.mapId = 217 
+        print "Initialization " + self.name
+        f = open(self.name + ".txt", "r")
+        for line in f:
+            val1, val2, val3 = line.split(":") 
+            self.mapId = int(val1)
+            self.x = int(val2)
+            self.y = int(val3)
 
         # Number of sprite + 1 = 13
         for i in range(1,13):
