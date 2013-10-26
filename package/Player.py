@@ -45,7 +45,7 @@ class Player(pygame.sprite.Sprite):
         self.name = name
 
         print "Initialization " + self.name
-        f = open(self.name + ".txt", "r")
+        f = open("player/" + self.name + ".txt", "r")
         for line in f:
             val1, val2, val3 = line.split(":") 
             self.mapId = int(val1)

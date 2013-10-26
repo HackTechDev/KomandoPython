@@ -408,11 +408,11 @@ def gotoMission(player, player2):
                 if event.key == pygame.K_q:
                     gameloop = True
                     Config.mission = False;
-                    f = open("player1.txt", "w")
+                    f = open("player/player1.txt", "w")
                     f.write(str(player1.mapId) + ":" + str(player1.rect.x) + ":" + str(player1.rect.y))
                     f.close()
 
-                    f = open("player2.txt", "w")
+                    f = open("player/player2.txt", "w")
                     f.write(str(player2.mapId) + ":" + str(player2.rect.x) + ":" + str(player2.rect.y))
                     f.close()
 
