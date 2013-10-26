@@ -389,7 +389,7 @@ def gotoMission(playerMapId, playerPosx, playerPosy, player2MapId, player2Posx, 
     player2.speed = 4
 
 
-
+    displayPlayer = 1
 
     # Main game loop
 
@@ -465,7 +465,23 @@ def gotoMission(playerMapId, playerPosx, playerPosy, player2MapId, player2Posx, 
                     print "Save map"
                     saveMap(player.mapId, wall_list)
 
-                #
+
+                # Switch between player
+                if event.key == pygame.K_F1 and (player.mapId != player2.mapId):
+                    print "Komando1"
+                    displayPlayer = 1
+                    currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list)
+                    nextlevel = Level(player.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
+                    
+                # Debug
+                if event.key == pygame.K_F2 and (player.mapId != player2.mapId):
+                    print "Komando2"
+                    displayPlayer = 2
+                    currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list)
+                    nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
+
+
+                # Show current players position
                 if event.key == pygame.K_w:
                     print "Current player position: " + str(player.mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
                     print "Current player position: " + str(player2.mapId) + " " + str(player2.rect.x) + " " + str(player2.rect.y)
@@ -508,6 +524,46 @@ def gotoMission(playerMapId, playerPosx, playerPosy, player2MapId, player2Posx, 
                         player.rect.y = -(player.halfHeightPlayer)
                         newLevel = True;
                         print "Bottom: Move to: " + str(player.mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
+
+                if event.key == pygame.K_b:
+
+                    # Left border
+                    if player2.rect.x <= -(player2.halfWidthPlayer) and newLevel == False:
+                        player2.mapId = player2.mapId - 1
+                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list)
+                        nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
+                        player2.rect.x = (32 * 30) - player2.halfWidthPlayer
+                        newLevel = True;
+                        print "Left: Move to: " + str(player2.mapId) + " " + str(player2.rect.x) + " " + str(player2.rect.y)
+                        
+                    # Right Border
+                    if player2.rect.x >= (30 * 32) - player2.halfWidthPlayer and newLevel == False:
+                        player2.mapId = player2.mapId + 1
+                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list)
+                        nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
+                        player2.rect.x = -(player2.halfWidthPlayer)
+                        newLevel = True;
+                        print "Right: Move to: " + str(player2.mapId) + " " + str(player2.rect.x) + " " + str(player2.rect.y)
+
+                    # Top border
+                    if player2.rect.y <= -(player2.halfHeightPlayer) and newLevel == False:
+                        player2.mapId = player2.mapId - 21 
+                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list)
+                        nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
+                        player2.rect.y = (32*15) - player2.halfHeightPlayer
+                        newLevel = True;
+                        print "Top: Move to: " + str(player2.mapId) + " " + str(player2.rect.x) + " " + str(player2.rect.y)
+
+                    # Bottom Border
+                    if player2.rect.y >= (32*15) - player2.halfHeightPlayer and newLevel == False:
+                        player2.mapId = player2.mapId + 21
+                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list)
+                        nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
+                        player2.rect.y = -(player2.halfHeightPlayer)
+                        newLevel = True;
+                        print "Bottom: Move to: " + str(player2.mapId) + " " + str(player2.rect.x) + " " + str(player2.rect.y)
+
+ 
 
                 # Players movement
                 # Komando1
@@ -642,9 +698,14 @@ def gotoMission(playerMapId, playerPosx, playerPosy, player2MapId, player2Posx, 
 
         ground_list.draw(screen)
 
-        playerMovingSprites.draw(screen)
-        
-        if(player.mapId == player2.mapId):
+
+        if (player.mapId != player2.mapId):     
+            if (displayPlayer == 1):
+                playerMovingSprites.draw(screen)
+            if (displayPlayer == 2):
+                player2MovingSprites.draw(screen)
+        else:
+            playerMovingSprites.draw(screen)
             player2MovingSprites.draw(screen)
 
         all_sprites_list.draw(screen)
