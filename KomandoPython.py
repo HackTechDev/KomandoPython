@@ -488,7 +488,6 @@ def gotoMission(playerMapId, playerPosx, playerPosy, player2MapId, player2Posx, 
 
                 # Change level
                 if event.key == pygame.K_n:
-
                     # Left border
                     if player.rect.x <= -(player.halfWidthPlayer) and newLevel == False:
                         player.mapId = player.mapId - 1
@@ -496,6 +495,7 @@ def gotoMission(playerMapId, playerPosx, playerPosy, player2MapId, player2Posx, 
                         nextlevel = Level(player.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
                         player.rect.x = (32 * 30) - player.halfWidthPlayer
                         newLevel = True;
+                        displayPlayer = 1
                         print "Left: Move to: " + str(player.mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
                         
                     # Right Border
@@ -505,6 +505,7 @@ def gotoMission(playerMapId, playerPosx, playerPosy, player2MapId, player2Posx, 
                         nextlevel = Level(player.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
                         player.rect.x = -(player.halfWidthPlayer)
                         newLevel = True;
+                        displayPlayer = 1
                         print "Right: Move to: " + str(player.mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
 
                     # Top border
@@ -514,6 +515,7 @@ def gotoMission(playerMapId, playerPosx, playerPosy, player2MapId, player2Posx, 
                         nextlevel = Level(player.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
                         player.rect.y = (32*15) - player.halfHeightPlayer
                         newLevel = True;
+                        displayPlayer = 1
                         print "Top: Move to: " + str(player.mapId) + " " + str(player.rect.x) + " " + str(player.rect.y)
 
                     # Bottom Border
@@ -534,6 +536,7 @@ def gotoMission(playerMapId, playerPosx, playerPosy, player2MapId, player2Posx, 
                         nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
                         player2.rect.x = (32 * 30) - player2.halfWidthPlayer
                         newLevel = True;
+                        displayPlayer = 2
                         print "Left: Move to: " + str(player2.mapId) + " " + str(player2.rect.x) + " " + str(player2.rect.y)
                         
                     # Right Border
@@ -543,6 +546,7 @@ def gotoMission(playerMapId, playerPosx, playerPosy, player2MapId, player2Posx, 
                         nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
                         player2.rect.x = -(player2.halfWidthPlayer)
                         newLevel = True;
+                        displayPlayer = 2
                         print "Right: Move to: " + str(player2.mapId) + " " + str(player2.rect.x) + " " + str(player2.rect.y)
 
                     # Top border
@@ -552,6 +556,7 @@ def gotoMission(playerMapId, playerPosx, playerPosy, player2MapId, player2Posx, 
                         nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
                         player2.rect.y = (32*15) - player2.halfHeightPlayer
                         newLevel = True;
+                        displayPlayer = 2
                         print "Top: Move to: " + str(player2.mapId) + " " + str(player2.rect.x) + " " + str(player2.rect.y)
 
                     # Bottom Border
@@ -561,6 +566,7 @@ def gotoMission(playerMapId, playerPosx, playerPosy, player2MapId, player2Posx, 
                         nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
                         player2.rect.y = -(player2.halfHeightPlayer)
                         newLevel = True;
+                        displayPlayer = 2
                         print "Bottom: Move to: " + str(player2.mapId) + " " + str(player2.rect.x) + " " + str(player2.rect.y)
 
  
