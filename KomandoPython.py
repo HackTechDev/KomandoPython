@@ -240,20 +240,18 @@ def gameUrl(url):
     print "KomandoPython.com"
     webbrowser.open_new_tab(url)
 
-# Global variable declaration and initialization
-
-playerMapIdGlobal = 217
-playerPosxGlobal = 48
-playerPosyGlobal = 32
-
-player2MapIdGlobal = 217
-player2PosxGlobal = 96
-player2PosyGlobal = 32
-
+firstInit = True
 
 def makeMenu(pos = 0):
+    global firstInit
+
+    # For the first time, create 2 fakes players
+    if firstInit == True:
+        player = Player("player1")
+        player2 = Player("player2")
+
     Config.menu = ezmenu.EzMenu(
-        ["Go to the Mission", lambda: gotoMission(playerMapIdGlobal, playerPosxGlobal, playerPosyGlobal, player2MapIdGlobal, player2PosxGlobal, player2PosyGlobal)],
+        ["Go to the Mission", lambda: gotoMission(player, player2)],
         ["View Commando", viewCommando],
         ["Select Mission", selectMission],
         ["View Current Mission", viewMission],
@@ -299,16 +297,9 @@ def saveMap(mapId, wall_list):
     mapFile.write(mapTmp)
     mapFile.close()
 
-def gotoMission(playerMapId, playerPosx, playerPosy, player2MapId, player2Posx, player2Posy):
+def gotoMission(player, player2):
 
-    # Global variables
-    global playerMapIdGlobal
-    global playerPosxGlobal
-    global playerPosyGlobal
-
-    global player2MapIdGlobal
-    global player2PosxGlobal
-    global player2PosyGlobal
+    global firstInit
 
     Config.mission = True
     # Setup mixer to avoid sound lag
@@ -322,10 +313,10 @@ def gotoMission(playerMapId, playerPosx, playerPosy, player2MapId, player2Posx, 
     boomsound = pygame.mixer.Sound(os.path.join('sound','boom.wav'))
 
     # 48*25
-    screen_width=1200
+    screen_width = 1200
     # 64*12
-    screen_height=640
-    screen=pygame.display.set_mode([screen_width,screen_height])
+    screen_height = 640
+    screen = pygame.display.set_mode([screen_width,screen_height])
 
     # Font
     font = pygame.font.Font(None, 36)
@@ -338,13 +329,33 @@ def gotoMission(playerMapId, playerPosx, playerPosy, player2MapId, player2Posx, 
     bar_right = pygame.image.load("images/panel/bar_right.png").convert()
 
     # Sprites Players
-    player = Player("player1", playerPosx, playerPosy)
+    if firstInit == True:
+        player = Player("player1")
+        player2 = Player("player2")
+
+        # Player Characteristic
+        player.name = "LeSanglier"
+        player.life = 100
+        player.ammunition = 20
+        player.direction = 8
+        player.score = 0
+        player.speed = 4
+
+        player2.name = "Nekrofage"
+        player2.life = 100
+        player2.ammunition = 20
+        player2.direction = 8
+        player2.score = 0
+        player2.speed = 4
+
+        firstInit = False
+
     playerMovingSprites = pygame.sprite.RenderPlain()
     playerMovingSprites.add(player)
-
-    player2 = Player("player2", player2Posx, player2Posy)
     player2MovingSprites = pygame.sprite.RenderPlain()
     player2MovingSprites.add(player2)
+
+
 
 
     # Sprites
@@ -361,7 +372,7 @@ def gotoMission(playerMapId, playerPosx, playerPosy, player2MapId, player2Posx, 
 
     # Load level
     way_list = list()
-    currentlevel = Level(playerMapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
+    currentlevel = Level(player.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
 
     clock = pygame.time.Clock()
 
@@ -370,23 +381,6 @@ def gotoMission(playerMapId, playerPosx, playerPosy, player2MapId, player2Posx, 
     newLevel = False
 
     debug = False
-
-    # Player Characteristic
-    player.name = "LeSanglier"
-    player.life = 100
-    player.ammunition = 20
-    player.direction = 8
-    player.mapId = playerMapId
-    player.score = 0
-    player.speed = 4
-
-    player2.name = "Nekrofage"
-    player2.life = 100
-    player2.ammunition = 20
-    player2.direction = 8
-    player2.mapId = player2MapId
-    player2.score = 0
-    player2.speed = 4
 
 
     displayPlayer = 1
@@ -398,15 +392,6 @@ def gotoMission(playerMapId, playerPosx, playerPosy, player2MapId, player2Posx, 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 gameloop=True
-                playerMapIdGlobal = player.mapId
-                playerPosxGlobal = player.rect.x
-                playerPosyGlobal = player.rect.y
-
-                player2MapIdGlobal = player2.mapId
-                player2PosxGlobal = player2.rect.x
-                player2PosyGlobal = player2.rect.y
-
-
 
             # Left mouse click
             if pygame.mouse.get_pressed()[0] == True:
@@ -436,14 +421,6 @@ def gotoMission(playerMapId, playerPosx, playerPosy, player2MapId, player2Posx, 
                 if event.key == pygame.K_q:
                     gameloop = True
                     Config.mission = False;
-                    playerMapIdGlobal = player.mapId
-                    playerPosxGlobal = player.rect.x
-                    playerPosyGlobal = player.rect.y
-
-                    player2MapIdGlobal = player2.mapId
-                    player2PosxGlobal = player2.rect.x
-                    player2PosyGlobal = player2.rect.y
-
 
                 # Music
                 if event.key == pygame.K_m:

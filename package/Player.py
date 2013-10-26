@@ -30,9 +30,27 @@ class Player(pygame.sprite.Sprite):
     halfWidthPlayer  = 24
     halfHeightPlayer = 32
 
-    def __init__(self, name, x, y):
+    posx = 0
+    posy = 0
+
+    x = 0
+    y = 0
+    
+    ammunition = 0
+
+    def __init__(self, name):
         pygame.sprite.Sprite.__init__(self)
         self.images=[]
+
+        # Init positions of each player
+        if name == "player1" :
+            self.x = 48
+            self.y = 32
+            self.mapId = 217
+        if name == "player2":
+            self.x = 96
+            self.y = 32
+            self.mapId = 217 
 
         # Number of sprite + 1 = 13
         for i in range(1,13):
@@ -45,8 +63,8 @@ class Player(pygame.sprite.Sprite):
 
         # Make our top-left corner the passed-in location.
         self.rect = self.image.get_rect()
-        self.rect.y = y
-        self.rect.x = x
+        self.rect.y = self.y
+        self.rect.x = self.x
 
         self.silent = False
 
