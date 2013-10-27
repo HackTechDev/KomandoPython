@@ -7,7 +7,9 @@ from Colour import *
 class Zombi(pygame.sprite.Sprite):
 
     name = ""
-    
+ 
+    num = 0
+   
     life = 100
 
     speed = 1 
@@ -38,10 +40,11 @@ class Zombi(pygame.sprite.Sprite):
     
     ammunition = 0
 
-    def __init__(self, name, mapId, x, y, life, ammunition, direction, score, speed):
+    def __init__(self, num, name, mapId, x, y, life, ammunition, direction, score, speed):
         pygame.sprite.Sprite.__init__(self)
         self.images=[]
     
+        self.num = num
         self.name = name
         self.mapId = int(mapId)
         self.x = int(x)

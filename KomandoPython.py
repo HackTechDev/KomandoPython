@@ -24,6 +24,7 @@ from lib import ezmenu
 from SqliteDB import *
 from NPC import *
 from Zombi import *
+from MapInfo import *
 
 """
 
@@ -242,14 +243,17 @@ def gameUrl(url):
     print "KomandoPython.com"
     webbrowser.open_new_tab(url)
 
-
 def makeMenu(pos = 0):
-
+    
+    # Fake datas
+    gotoMap = MapInfo(217)
     player1 = Player("player1")
     player2 = Player("player2")
 
+    print "makeMenu: " + str(gotoMap.Id)
+
     Config.menu = ezmenu.EzMenu(
-        ["Go to the Mission", lambda: gotoMission(player1, player2)],
+        ["Go to the Mission", lambda: gotoMission(gotoMap, player1, player2)],
         ["View Commando", viewCommando],
         ["Select Mission", selectMission],
         ["View Current Mission", viewMission],
@@ -328,7 +332,7 @@ def savePlayer(player):
             str(player.life) + ":" + str(player.ammunition) + ":" + str(player.direction) + ":" + str(player.score) + ":" + str(player.speed))
     f.close()
 
-def gotoMission(player, player2):
+def gotoMission(gotoMap, player, player2):
     Config.mission = True
     # Setup mixer to avoid sound lag
     pygame.mixer.pre_init(44100, -16, 2, 2048)
@@ -370,8 +374,9 @@ def gotoMission(player, player2):
     
     # Initialization zombis
 
+    zombi_list = pygame.sprite.RenderPlain()
     try: 
-        file = open("maps/" + str(player1.mapId) +".z.txt", "r")
+        file = open("maps/" + str(gotoMap.Id) +".z.txt", "r")
         print "Load: zombis"
     except IOError:
         print "No zombis"
@@ -385,23 +390,12 @@ def gotoMission(player, player2):
             line = line[:-1]
             val = line.split(":")
             
-            if countZombi == 0:
-                zombi0 = Zombi("zombi" + str(countZombi), val[0], val[1], val[2], val[3], val[4], val[5], val[6], val[7] )
-                zombi0MovingSprites = pygame.sprite.RenderPlain()
-                zombi0MovingSprites.add(zombi0)
-            if countZombi == 1:
-                zombi1 = Zombi("zombi" + str(countZombi), val[0], val[1], val[2], val[3], val[4], val[5], val[6], val[7] )
-                zombi1MovingSprites = pygame.sprite.RenderPlain()
-                zombi1MovingSprites.add(zombi1)
-            if countZombi == 2:
-                zombi2 = Zombi("zombi" + str(countZombi), val[0], val[1], val[2], val[3], val[4], val[5], val[6], val[7] )
-                zombi2MovingSprites = pygame.sprite.RenderPlain()
-                zombi2MovingSprites.add(zombi2)
+            zombi = Zombi(str(countZombi), "zombi" + str(countZombi), val[0], val[1], val[2], val[3], val[4], val[5], val[6], val[7] )
+            zombi_list.add(zombi)
          
             countZombi = countZombi + 1
 
-        zombiMap = player1.mapId
-                    
+        zombiMap = gotoMap.Id
      
     # Sprites
     all_sprites_list = pygame.sprite.RenderPlain()
@@ -419,7 +413,7 @@ def gotoMission(player, player2):
 
     # Load level (default level)
     way_list = list()
-    currentlevel = Level(player1.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
+    currentlevel = Level(gotoMap.Id, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
 
     clock = pygame.time.Clock()
 
@@ -436,7 +430,7 @@ def gotoMission(player, player2):
     displayCharacPlayer2 = False
 
     # Default player1.mapId
-    currentMapId = player1.mapId
+    currentMapId = gotoMap.Id
 
     # Main game loop
 
@@ -521,13 +515,14 @@ def gotoMission(player, player2):
                     displayPlayer = 1
                     currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
                     nextlevel = Level(player1.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
-                    
+                    currentMapId = player1.mapId                 
+   
                 if event.key == pygame.K_F2 and (player1.mapId != player2.mapId):
                     print "Komando2"
                     displayPlayer = 2
                     currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
                     nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
-
+                    currentMapId = player2.mapId
 
                 # Show current players position
                 if event.key == pygame.K_w:
@@ -536,9 +531,9 @@ def gotoMission(player, player2):
 
                 # Change level
                 if event.key == pygame.K_n:
-                    saveWallMap(player1.mapId, wall_list)
                     # Left border
                     if player1.rect.x <= -(player1.halfWidthPlayer) and newLevel == False:
+                        saveWallMap(player1.mapId, wall_list)
                         player1.mapId = player1.mapId - 1
                         currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
                         nextlevel = Level(player1.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
@@ -548,8 +543,10 @@ def gotoMission(player, player2):
                         print "Left: Move to: " + str(player1.mapId) + " " + str(player1.rect.x) + " " + str(player1.rect.y)
                         currentMapId = player1.mapId
                         
+                        
                     # Right Border
                     if player1.rect.x >= (30 * 32) - player1.halfWidthPlayer and newLevel == False:
+                        saveWallMap(player1.mapId, wall_list)
                         player1.mapId = player1.mapId + 1
                         currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
                         nextlevel = Level(player1.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
@@ -561,6 +558,7 @@ def gotoMission(player, player2):
 
                     # Top border
                     if player1.rect.y <= -(player1.halfHeightPlayer) and newLevel == False:
+                        saveWallMap(player1.mapId, wall_list)
                         player1.mapId = player1.mapId - 21 
                         currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
                         nextlevel = Level(player1.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
@@ -572,18 +570,20 @@ def gotoMission(player, player2):
 
                     # Bottom Border
                     if player1.rect.y >= (32*15) - player1.halfHeightPlayer and newLevel == False:
+                        saveWallMap(player1.mapId, wall_list)
                         player1.mapId = player1.mapId + 21
                         currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
                         nextlevel = Level(player1.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
                         player1.rect.y = -(player1.halfHeightPlayer)
                         newLevel = True;
+                        displayPlayer = 1
                         print "Bottom: Move to: " + str(player1.mapId) + " " + str(player1.rect.x) + " " + str(player1.rect.y)
                         currentMapId = player1.mapId
 
                 if event.key == pygame.K_b:
-                    saveWallMap(player2.mapId, wall_list)
                     # Left border
                     if player2.rect.x <= -(player2.halfWidthPlayer) and newLevel == False:
+                        saveWallMap(player2.mapId, wall_list)
                         player2.mapId = player2.mapId - 1
                         currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
                         nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
@@ -595,6 +595,7 @@ def gotoMission(player, player2):
                         
                     # Right Border
                     if player2.rect.x >= (30 * 32) - player2.halfWidthPlayer and newLevel == False:
+                        saveWallMap(player2.mapId, wall_list)
                         player2.mapId = player2.mapId + 1
                         currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
                         nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
@@ -606,6 +607,7 @@ def gotoMission(player, player2):
 
                     # Top border
                     if player2.rect.y <= -(player2.halfHeightPlayer) and newLevel == False:
+                        saveWallMap(player2.mapId, wall_list)
                         player2.mapId = player2.mapId - 21 
                         currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
                         nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
@@ -617,6 +619,7 @@ def gotoMission(player, player2):
 
                     # Bottom Border
                     if player2.rect.y >= (32*15) - player2.halfHeightPlayer and newLevel == False:
+                        saveWallMap(player2.mapId, wall_list)
                         player2.mapId = player2.mapId + 21
                         currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
                         nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
@@ -632,19 +635,22 @@ def gotoMission(player, player2):
                     player1.changeSpeed(-player1.speed, 0)
                     player1.direction = 4
                     newLevel = False
-
                     if zombiMap != -1:
-                        zombi0.changeSpeed(zombi0.speed, 0)
-                        zombi0.direction = 6
+                        for zombi in zombi_list:
+                            if zombi.name == "zombi0":
+                                zombi.changeSpeed(zombi.speed, 0)
+                                zombi.direction = 6
 
                 if event.key == pygame.K_RIGHT:
                     player1.changeSpeed(player1.speed, 0)
                     player1.direction = 6
                     newLevel = False
-
+                    
                     if zombiMap != -1:
-                        zombi0.changeSpeed(-zombi0.speed, 0)
-                        zombi0.direction = 4
+                        for zombi in zombi_list:
+                            if zombi.name == "zombi0":
+                                zombi.changeSpeed(-zombi.speed, 0)
+                                zombi.direction = 4
 
                 if event.key == pygame.K_UP:
                     player1.changeSpeed(0, -player1.speed)
@@ -652,8 +658,10 @@ def gotoMission(player, player2):
                     newLevel = False
 
                     if zombiMap != -1:
-                        zombi0.changeSpeed(0, zombi0.speed)
-                        zombi0.direction = 2
+                        for zombi in zombi_list:
+                            if zombi.name == "zombi0":
+                                zombi.changeSpeed(0, zombi.speed)
+                                zombi.direction = 2
 
                 if event.key == pygame.K_DOWN:
                     player1.changeSpeed(0, player1.speed)
@@ -661,8 +669,11 @@ def gotoMission(player, player2):
                     newLevel = False
 
                     if zombiMap != -1:
-                        zombi0.changeSpeed(0, -zombi0.speed)
-                        zombi0.direction = 8
+                        for zombi in zombi_list:
+                            if zombi.name == "zombi0":
+                                zombi.changeSpeed(0, -zombi.speed)
+                                zombi.direction = 8
+
 
                 # Komando2
                 if event.key == pygame.K_j:
@@ -731,27 +742,35 @@ def gotoMission(player, player2):
                 # Player 1
                 if event.key == pygame.K_LEFT:
                     player1.changeSpeed(player1.speed, 0)
-
                     if zombiMap != -1:
-                        zombi0.changeSpeed(-zombi0.speed, 0)
+                        for zombi in zombi_list:
+                            if zombi.name == "zombi0":
+                                zombi.changeSpeed(-zombi.speed, 0)
+
 
                 if event.key == pygame.K_RIGHT:
                     player1.changeSpeed(-player1.speed, 0)
 
                     if zombiMap != -1:
-                        zombi0.changeSpeed(zombi0.speed, 0)
+                        for zombi in zombi_list:
+                            if zombi.name == "zombi0":
+                                zombi.changeSpeed(zombi.speed, 0)
 
                 if event.key == pygame.K_UP:
                     player1.changeSpeed(0, player1.speed)
 
                     if zombiMap != -1:
-                        zombi0.changeSpeed(0, -zombi0.speed)
+                        for zombi in zombi_list:
+                            if zombi.name == "zombi0":
+                                zombi.changeSpeed(0, -zombi.speed)
 
                 if event.key == pygame.K_DOWN:
                     player1.changeSpeed(0, -player1.speed)
 
                     if zombiMap != -1:                    
-                        zombi0.changeSpeed(0, zombi0.speed)
+                        for zombi in zombi_list:
+                            if zombi.name == "zombi0":
+                                zombi.changeSpeed(0, zombi.speed)
 
                 # Player 2
                 if event.key == pygame.K_j:
@@ -782,9 +801,7 @@ def gotoMission(player, player2):
         player2.update(all_sprites_list)
 
         if zombiMap != -1:
-            zombi0.update(all_sprites_list)
-            zombi1.update(all_sprites_list)
-            zombi2.update(all_sprites_list)
+            zombi_list.update(all_sprites_list)
 
         # Calculate mechanics for each bullet
         for bullet in bullet_list:
@@ -888,13 +905,8 @@ def gotoMission(player, player2):
             screen.blit(characPlayer2, [player2.rect.x, player2.rect.y-10])
 
         # Is a zombiMap
-        if zombiMap != -1:
-            if zombi0.mapId == currentMapId:
-                zombi0MovingSprites.draw(screen)
-            if zombi1.mapId == currentMapId:
-                zombi1MovingSprites.draw(screen)
-            if zombi2.mapId == currentMapId:
-                zombi2MovingSprites.draw(screen)
+        if zombiMap == currentMapId:
+                zombi_list.draw(screen)
 
 
         all_sprites_list.draw(screen)
