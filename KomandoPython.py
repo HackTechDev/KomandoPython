@@ -406,14 +406,32 @@ def gotoMission(player, player2):
                 mousex = pygame.mouse.get_pos()[0]
                 mousey = pygame.mouse.get_pos()[1]
                 #print str(mousex) + " " +  str(mousey)
-                #print str(player1.rect.x+24) + " " + str(player1.rect.y+32)
+                #print str(player1.rect.x + 24) + " " + str(player1.rect.y + 32)
                 for wall in wall_list:
-                    #print "wall: " + str(wall.x/32) + " " + str(wall.y/32)
+                    #print "wall: " + str(wall.x / 32) + " " + str(wall.y / 32)
                     # Delete wall
-                    if( mousex > wall.x and mousex < wall.x+32 and  mousey > wall.y and mousey < wall.y+32):
+                    if( mousex > wall.x and mousex < wall.x + 32 and mousey > wall.y and mousey < wall.y + 32):
                         print "Delete wall" 
                         wall_list.remove(wall)
                         all_sprites_list.remove(wall)
+
+                if mousex > player1.rect.x and mousex < player1.rect.x + 48 and mousey > player1.rect.y and mousey < player1.rect.y + 64:
+                    if displayCharacPlayer1 == False:
+                        print "Display CharacPlayer1"
+                        displayCharacPlayer1 = True
+                    else:
+                        print "Not Display CharacPlayer1"
+                        displayCharacPlayer1 = False
+                if mousex > player2.rect.x and mousex < player2.rect.x + 48 and mousey > player2.rect.y and mousey < player2.rect.y + 64:
+                    if displayCharacPlayer2 == False:
+                        print "Display CharacPlayer2"
+                        displayCharacPlayer2 = True
+                    else:
+                        print "Not Display CharacPlayer2"
+                        displayCharacPlayer2 = False
+
+
+
 
             # Right mouse click
             if pygame.mouse.get_pressed()[2] == True:        
@@ -693,14 +711,22 @@ def gotoMission(player, player2):
             if (displayPlayer == 1):
                 player1MovingSprites.draw(screen)
 
-                characPlayer1 = font1.render("Player1", True, blue)
+                if displayCharacPlayer1 == True:
+                    characPlayer1 = font1.render("Player1", True, blue)
+                else:
+                    characPlayer1 = font1.render("", True, blue)
+
                 characPlayer1Recr = characPlayer1.get_rect()
                 screen.blit(characPlayer1, [player1.rect.x, player1.rect.y-10])
                
             if (displayPlayer == 2):
                 player2MovingSprites.draw(screen)
 
-                characPlayer2 = font1.render("Player2", True, blue)
+                if displayCharacPlayer2 == True:
+                    characPlayer2 = font1.render("Player2", True, blue)
+                else:
+                    characPlayer2 = font1.render("", True, blue)
+
                 characPlayer2Rec = characPlayer2.get_rect()
                 screen.blit(characPlayer2, [player2.rect.x, player2.rect.y-10])
 
@@ -708,14 +734,21 @@ def gotoMission(player, player2):
             player1MovingSprites.draw(screen)
             player2MovingSprites.draw(screen)
 
-            characPlayer1 = font1.render("Player1", True, blue)
+            if displayCharacPlayer1 == True:
+                characPlayer1 = font1.render("Player1", True, blue)
+            else:
+                characPlayer1 = font1.render("", True, blue)
+
             characPlayer1Recr = characPlayer1.get_rect()
             screen.blit(characPlayer1, [player1.rect.x, player1.rect.y-10])
+       
+            if displayCharacPlayer2 == True:
+                characPlayer2 = font1.render("Player2", True, blue)
+            else:
+                characPlayer2 = font1.render("", True, blue)
 
-            characPlayer2 = font1.render("Player2", True, blue)
             characPlayer2Rec = characPlayer2.get_rect()
             screen.blit(characPlayer2, [player2.rect.x, player2.rect.y-10])
-
 
 
 
