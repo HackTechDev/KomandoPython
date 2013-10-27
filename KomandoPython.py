@@ -345,7 +345,8 @@ def gotoMission(player, player2):
     screen = pygame.display.set_mode([screen_width,screen_height])
 
     # Font
-    font = pygame.font.Font(None, 36)
+    font  = pygame.font.Font(None, 36)
+    font1 = pygame.font.Font(None, 18)
 
     pygame.display.set_caption('Komando Python : Infiltration')
 
@@ -388,6 +389,9 @@ def gotoMission(player, player2):
 
 
     displayPlayer = 1
+
+    displayCharacPlayer1 = False
+    displayCharacPlayer2 = False
 
     # Main game loop
 
@@ -688,11 +692,34 @@ def gotoMission(player, player2):
         if (player1.mapId != player2.mapId):     
             if (displayPlayer == 1):
                 player1MovingSprites.draw(screen)
+
+                characPlayer1 = font1.render("Player1", True, blue)
+                characPlayer1Recr = characPlayer1.get_rect()
+                screen.blit(characPlayer1, [player1.rect.x, player1.rect.y-10])
+               
             if (displayPlayer == 2):
                 player2MovingSprites.draw(screen)
+
+                characPlayer2 = font1.render("Player2", True, blue)
+                characPlayer2Rec = characPlayer2.get_rect()
+                screen.blit(characPlayer2, [player2.rect.x, player2.rect.y-10])
+
         else:
             player1MovingSprites.draw(screen)
             player2MovingSprites.draw(screen)
+
+            characPlayer1 = font1.render("Player1", True, blue)
+            characPlayer1Recr = characPlayer1.get_rect()
+            screen.blit(characPlayer1, [player1.rect.x, player1.rect.y-10])
+
+            characPlayer2 = font1.render("Player2", True, blue)
+            characPlayer2Rec = characPlayer2.get_rect()
+            screen.blit(characPlayer2, [player2.rect.x, player2.rect.y-10])
+
+
+
+
+
 
         all_sprites_list.draw(screen)
 
@@ -706,6 +733,9 @@ def gotoMission(player, player2):
         screen.blit(bar_bottom, [0,480])
         screen.blit(bar_right, [960,0])
         screen.blit(image_fnscar, [960,10])
+
+        
+
 
         # Display
         pygame.display.flip()
