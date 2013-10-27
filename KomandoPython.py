@@ -25,7 +25,7 @@ from SqliteDB import *
 
 """
 
-Komando Python : Infiltration
+Komando Python : Zomby Infiltration
 By le Sanglier des Ardennes
 
 """
@@ -56,7 +56,7 @@ def viewMission():
     # Font
     font = pygame.font.Font(None, 36)
 
-    pygame.display.set_caption('Komando Python : Infiltration')
+    pygame.display.set_caption('Komando Python : Zomby Infiltration')
 
     background = pygame.Surface(screen.get_size())
 
