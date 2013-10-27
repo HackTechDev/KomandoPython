@@ -22,6 +22,7 @@ from Colour import *
 from UserInterface import *
 from lib import ezmenu
 from SqliteDB import *
+from NPC import *
 
 """
 
@@ -117,7 +118,7 @@ def viewCommando():
     # Font
     font = pygame.font.Font(None, 36)
 
-    pygame.display.set_caption('Komando Python : Infiltration')
+    pygame.display.set_caption('Komando Python : Zomby Infiltration')
 
     background = pygame.Surface(screen.get_size())
 
@@ -196,7 +197,7 @@ def selectMission():
     # Font
     font = pygame.font.Font(None, 36)
 
-    pygame.display.set_caption('Komando Python : Infiltration')
+    pygame.display.set_caption('Komando Python : Zomby Infiltration')
 
     background = pygame.Surface(screen.get_size())
 
@@ -296,7 +297,7 @@ def saveWallMap(mapId, wall_list):
 def saveItemMap(mapId, item_list):
     mapArr = [[0 for col in range(30)] for row in range(15)]
     for item in item_list:
-        print str(item.y/32) + " " + str(item.x/32)
+        #print "saveItemMap: " + str(item.y/32) + " " + str(item.x/32)
         mapArr[item.y/32][item.x/32] = 1
 
     line = ""
@@ -348,7 +349,7 @@ def gotoMission(player, player2):
     font  = pygame.font.Font(None, 36)
     font1 = pygame.font.Font(None, 18)
 
-    pygame.display.set_caption('Komando Python : Infiltration')
+    pygame.display.set_caption('Komando Python : Zomby Infiltration')
 
     # Panel
     image_fnscar = pygame.image.load("images/panel/gun_fnscar.png").convert()
@@ -370,6 +371,8 @@ def gotoMission(player, player2):
 
     item_list = pygame.sprite.RenderPlain()
 
+    npc_list = pygame.sprite.RenderPlain()
+
     ground_list = pygame.sprite.RenderPlain()
      
     # List of each bullet
@@ -377,7 +380,7 @@ def gotoMission(player, player2):
 
     # Load level
     way_list = list()
-    currentlevel = Level(player1.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
+    currentlevel = Level(player1.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
 
     clock = pygame.time.Clock()
 
@@ -474,14 +477,14 @@ def gotoMission(player, player2):
                 if event.key == pygame.K_F1 and (player1.mapId != player2.mapId):
                     print "Komando1"
                     displayPlayer = 1
-                    currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list)
-                    nextlevel = Level(player1.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
+                    currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
+                    nextlevel = Level(player1.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
                     
                 if event.key == pygame.K_F2 and (player1.mapId != player2.mapId):
                     print "Komando2"
                     displayPlayer = 2
-                    currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list)
-                    nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
+                    currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
+                    nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
 
 
                 # Show current players position
@@ -495,8 +498,8 @@ def gotoMission(player, player2):
                     # Left border
                     if player1.rect.x <= -(player1.halfWidthPlayer) and newLevel == False:
                         player1.mapId = player1.mapId - 1
-                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list)
-                        nextlevel = Level(player1.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
+                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
+                        nextlevel = Level(player1.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
                         player1.rect.x = (32 * 30) - player1.halfWidthPlayer
                         newLevel = True;
                         displayPlayer = 1
@@ -505,8 +508,8 @@ def gotoMission(player, player2):
                     # Right Border
                     if player1.rect.x >= (30 * 32) - player1.halfWidthPlayer and newLevel == False:
                         player1.mapId = player1.mapId + 1
-                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list)
-                        nextlevel = Level(player1.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
+                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
+                        nextlevel = Level(player1.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
                         player1.rect.x = -(player1.halfWidthPlayer)
                         newLevel = True;
                         displayPlayer = 1
@@ -515,8 +518,8 @@ def gotoMission(player, player2):
                     # Top border
                     if player1.rect.y <= -(player1.halfHeightPlayer) and newLevel == False:
                         player1.mapId = player1.mapId - 21 
-                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list)
-                        nextlevel = Level(player1.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
+                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
+                        nextlevel = Level(player1.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
                         player1.rect.y = (32*15) - player1.halfHeightPlayer
                         newLevel = True;
                         displayPlayer = 1
@@ -525,8 +528,8 @@ def gotoMission(player, player2):
                     # Bottom Border
                     if player1.rect.y >= (32*15) - player1.halfHeightPlayer and newLevel == False:
                         player1.mapId = player1.mapId + 21
-                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list)
-                        nextlevel = Level(player1.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
+                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
+                        nextlevel = Level(player1.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
                         player1.rect.y = -(player1.halfHeightPlayer)
                         newLevel = True;
                         print "Bottom: Move to: " + str(player1.mapId) + " " + str(player1.rect.x) + " " + str(player1.rect.y)
@@ -536,8 +539,8 @@ def gotoMission(player, player2):
                     # Left border
                     if player2.rect.x <= -(player2.halfWidthPlayer) and newLevel == False:
                         player2.mapId = player2.mapId - 1
-                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list)
-                        nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
+                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
+                        nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
                         player2.rect.x = (32 * 30) - player2.halfWidthPlayer
                         newLevel = True;
                         displayPlayer = 2
@@ -546,8 +549,8 @@ def gotoMission(player, player2):
                     # Right Border
                     if player2.rect.x >= (30 * 32) - player2.halfWidthPlayer and newLevel == False:
                         player2.mapId = player2.mapId + 1
-                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list)
-                        nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
+                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
+                        nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
                         player2.rect.x = -(player2.halfWidthPlayer)
                         newLevel = True;
                         displayPlayer = 2
@@ -556,8 +559,8 @@ def gotoMission(player, player2):
                     # Top border
                     if player2.rect.y <= -(player2.halfHeightPlayer) and newLevel == False:
                         player2.mapId = player2.mapId - 21 
-                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list)
-                        nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
+                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
+                        nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
                         player2.rect.y = (32*15) - player2.halfHeightPlayer
                         newLevel = True;
                         displayPlayer = 2
@@ -566,8 +569,8 @@ def gotoMission(player, player2):
                     # Bottom Border
                     if player2.rect.y >= (32*15) - player2.halfHeightPlayer and newLevel == False:
                         player2.mapId = player2.mapId + 21
-                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list)
-                        nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list)
+                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
+                        nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
                         player2.rect.y = -(player2.halfHeightPlayer)
                         newLevel = True;
                         displayPlayer = 2
@@ -697,6 +700,19 @@ def gotoMission(player, player2):
                 player1.score += 1
                 saveItemMap(player1.mapId, item_list)
 
+
+            # See if it hit a npc
+            npc_hit_list = pygame.sprite.spritecollide(bullet, npc_list, True)
+
+            # For each npc hit, remove the bullet and add to the player1.score
+            for npc in npc_hit_list:
+                print "Hit: npc"
+                boomSound.play()
+                bullet_list.remove(bullet)
+                all_sprites_list.remove(bullet)
+                player1.score += 3
+
+
             # Remove the bullet if it flies up off the screen
             if bullet.rect.x > (30*32) or bullet.rect.x < 0 or bullet.rect.y > (15*32) or bullet.rect.y < 0:
                 bullet_list.remove(bullet)
@@ -801,7 +817,7 @@ def main():
     # Font
     font = pygame.font.Font(None, 36)
 
-    pygame.display.set_caption('Komando Python : Infiltration')
+    pygame.display.set_caption('Komando Python : Zomby Infiltration')
 
     background = pygame.Surface(screen.get_size())
 
@@ -814,7 +830,7 @@ def main():
 
     # Title screen
 
-    titleScreen=font.render("Komando Python : Infiltration", True, blue)
+    titleScreen=font.render("Komando Python : Zomby Infiltration", True, blue)
     titleScreenRect = titleScreen.get_rect()
     screen.blit(titleScreenImage, [120,0])
     screen.blit(titleScreen, [130,10])
@@ -863,7 +879,7 @@ def main():
 
     # End title screen
 
-    titleScreen=font.render("Komando Python : Infiltration", True, blue)
+    titleScreen=font.render("Komando Python : Zomby Infiltration", True, blue)
     titleScreenRect = titleScreen.get_rect()
     screen.fill(black)
     screen.blit(titleScreenImage, [120,0])
