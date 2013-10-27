@@ -375,7 +375,7 @@ def gotoMission(player, player2):
         print "Load: zombis"
     except IOError:
         print "No zombis"
-        zombiMap = False
+        zombiMap = -1
     else:
         line_list = file.readlines()
         file.close()
@@ -400,7 +400,7 @@ def gotoMission(player, player2):
          
             countZombi = countZombi + 1
 
-        zombiMap = True
+        zombiMap = player1.mapId
                     
      
     # Sprites
@@ -633,7 +633,7 @@ def gotoMission(player, player2):
                     player1.direction = 4
                     newLevel = False
 
-                    if zombiMap == True:
+                    if zombiMap != -1:
                         zombi0.changeSpeed(zombi0.speed, 0)
                         zombi0.direction = 6
 
@@ -642,7 +642,7 @@ def gotoMission(player, player2):
                     player1.direction = 6
                     newLevel = False
 
-                    if zombiMap == True:
+                    if zombiMap != -1:
                         zombi0.changeSpeed(-zombi0.speed, 0)
                         zombi0.direction = 4
 
@@ -651,7 +651,7 @@ def gotoMission(player, player2):
                     player1.direction = 8
                     newLevel = False
 
-                    if zombiMap == True:
+                    if zombiMap != -1:
                         zombi0.changeSpeed(0, zombi0.speed)
                         zombi0.direction = 2
 
@@ -660,7 +660,7 @@ def gotoMission(player, player2):
                     player1.direction = 2
                     newLevel = False
 
-                    if zombiMap == True:
+                    if zombiMap != -1:
                         zombi0.changeSpeed(0, -zombi0.speed)
                         zombi0.direction = 8
 
@@ -732,25 +732,25 @@ def gotoMission(player, player2):
                 if event.key == pygame.K_LEFT:
                     player1.changeSpeed(player1.speed, 0)
 
-                    if zombiMap == True:
+                    if zombiMap != -1:
                         zombi0.changeSpeed(-zombi0.speed, 0)
 
                 if event.key == pygame.K_RIGHT:
                     player1.changeSpeed(-player1.speed, 0)
 
-                    if zombiMap == True:
+                    if zombiMap != -1:
                         zombi0.changeSpeed(zombi0.speed, 0)
 
                 if event.key == pygame.K_UP:
                     player1.changeSpeed(0, player1.speed)
 
-                    if zombiMap == True:
+                    if zombiMap != -1:
                         zombi0.changeSpeed(0, -zombi0.speed)
 
                 if event.key == pygame.K_DOWN:
                     player1.changeSpeed(0, -player1.speed)
 
-                    if zombiMap == True:                    
+                    if zombiMap != -1:                    
                         zombi0.changeSpeed(0, zombi0.speed)
 
                 # Player 2
@@ -781,7 +781,7 @@ def gotoMission(player, player2):
         player1.update(all_sprites_list)
         player2.update(all_sprites_list)
 
-        if zombiMap == True:
+        if zombiMap != -1:
             zombi0.update(all_sprites_list)
             zombi1.update(all_sprites_list)
             zombi2.update(all_sprites_list)
@@ -887,8 +887,8 @@ def gotoMission(player, player2):
             characPlayer2Rec = characPlayer2.get_rect()
             screen.blit(characPlayer2, [player2.rect.x, player2.rect.y-10])
 
-
-        if zombiMap == True:
+        # Is a zombiMap
+        if zombiMap != -1:
             if zombi0.mapId == currentMapId:
                 zombi0MovingSprites.draw(screen)
             if zombi1.mapId == currentMapId:
