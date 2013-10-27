@@ -29,7 +29,7 @@ class Level():
 
         # Load background
         print "Load: background"
-        file = open("maps/"+str(filename)+".b.txt", "r")
+        file = open("maps/" + str(filename) + ".b.txt", "r")
         line_list = file.readlines()
         file.close()
 
@@ -54,7 +54,7 @@ class Level():
             
         # Load wall
         print "Load: wall"
-        file = open("maps/"+str(filename)+".w.txt", "r")
+        file = open("maps/" + str(filename) + ".w.txt", "r")
         line_list = file.readlines()
         file.close()
 
@@ -68,16 +68,19 @@ class Level():
                     wall = Wall("int_wall_bricks.png", posx, posy, 32, 32)
                     wall_list.add(wall)
                     all_sprites_list.add(wall)
-                    #print "Add: wall " + str(posx) + " " + str(posy)
                 posx = posx + 1
             posy = posy + 1
             posx = 0 
             
         # Load item
         print "Load: item"
-        file = open("maps/default/1.i.txt", "r")
+        try:
+            file = open("maps/" + str(filename) + ".i.txt", "r")
+        except IOError:
+            file = open("maps/default/1.i.txt", "r")
         line_list = file.readlines()
         file.close()
+        
 
         posx = 0 
         posy = 0
@@ -89,7 +92,6 @@ class Level():
                     item = Item("button.png", posx, posy, 32, 32)
                     item_list.add(item)
                     all_sprites_list.add(item)
-                    print "    Add: button" 
                 posx = posx + 1
             posy = posy + 1
             posx = 0 

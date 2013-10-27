@@ -243,11 +243,11 @@ def gameUrl(url):
 
 def makeMenu(pos = 0):
 
-    player  = Player("player1")
+    player1 = Player("player1")
     player2 = Player("player2")
 
     Config.menu = ezmenu.EzMenu(
-        ["Go to the Mission", lambda: gotoMission(player, player2)],
+        ["Go to the Mission", lambda: gotoMission(player1, player2)],
         ["View Commando", viewCommando],
         ["Select Mission", selectMission],
         ["View Current Mission", viewMission],
@@ -266,7 +266,7 @@ def makeMenu(pos = 0):
     Config.menu.set_normal_color((255, 255, 255))
     Config.menu.option = pos 
 
-def saveMap(mapId, wall_list):
+def saveWallMap(mapId, wall_list):
     mapArr = [[0 for col in range(30)] for row in range(15)]
 
     for wall in wall_list:
@@ -293,9 +293,40 @@ def saveMap(mapId, wall_list):
     mapFile.write(mapTmp)
     mapFile.close()
 
+def saveItemMap(mapId, item_list):
+    mapArr = [[0 for col in range(30)] for row in range(15)]
+    for item in item_list:
+        print str(item.y/32) + " " + str(item.x/32)
+        mapArr[item.y/32][item.x/32] = 1
+
+    line = ""
+    count = 0
+    mapTmp = ""
+    for row in mapArr:
+        for col in row:
+            if col == 0:
+                line = line + "00:"
+            if col == 1:
+                line = line + "01:"
+            if count == 29:
+                mapTmp = mapTmp + line[:-1] + "\n"
+                line = ""
+                count = 0
+            else:
+                count = count + 1
+
+    #print mapTmp
+    mapFile = open("maps/" + str(mapId) + ".i.txt", "w")
+    mapFile.write(mapTmp)
+    mapFile.close()
+
+def savePlayer(player):
+    f = open("player/" + player.name + ".txt", "w")
+    f.write(str(player.mapId) + ":" + str(player.rect.x) + ":" + str(player.rect.y) + ":" + 
+            str(player.life) + ":" + str(player.ammunition) + ":" + str(player.direction) + ":" + str(player.score) + ":" + str(player.speed))
+    f.close()
+
 def gotoMission(player, player2):
-
-
     Config.mission = True
     # Setup mixer to avoid sound lag
     pygame.mixer.pre_init(44100, -16, 2, 2048)
@@ -304,8 +335,8 @@ def gotoMission(player, player2):
     pygame.init()
 
     # Sounds
-    shootsound = pygame.mixer.Sound(os.path.join('sound','shoot.wav'))
-    boomsound = pygame.mixer.Sound(os.path.join('sound','boom.wav'))
+    shootSound = pygame.mixer.Sound(os.path.join('sound','shoot.wav'))
+    boomSound = pygame.mixer.Sound(os.path.join('sound','boom.wav'))
 
     # 48*25
     screen_width = 1200
@@ -394,15 +425,12 @@ def gotoMission(player, player2):
                 if event.key == pygame.K_q:
                     gameloop = True
                     Config.mission = False;
-                    f = open("player/player1.txt", "w")
-                    f.write(str(player1.mapId) + ":" + str(player1.rect.x) + ":" + str(player1.rect.y) + ":" + 
-                            str(player1.life) + ":" + str(player1.ammunition) + ":" + str(player1.direction) + ":" + str(player1.score) + ":" + str(player1.speed))
-                    f.close()
+                    # Save all
+                    savePlayer(player1)
+                    savePlayer(player2)
 
-                    f = open("player/player2.txt", "w")
-                    f.write(str(player2.mapId) + ":" + str(player2.rect.x) + ":" + str(player2.rect.y) + ":" + 
-                            str(player2.life) + ":" + str(player2.ammunition) + ":" + str(player2.direction) + ":" + str(player2.score) + ":" + str(player2.speed))
-                    f.close()
+                    saveWallMap(player1.mapId, wall_list)
+                    saveItemMap(player1.mapId, item_list)
 
                 # Music
                 if event.key == pygame.K_m:
@@ -418,11 +446,6 @@ def gotoMission(player, player2):
                 # Debug
                 if event.key == pygame.K_d:
                     print "Debug:"
-
-                # Save current map
-                if event.key == pygame.K_s:
-                    print "Save map"
-                    saveMap(player1.mapId, wall_list)
 
 
                 # Switch between player
@@ -446,6 +469,7 @@ def gotoMission(player, player2):
 
                 # Change level
                 if event.key == pygame.K_n:
+                    saveWallMap(player1.mapId, wall_list)
                     # Left border
                     if player1.rect.x <= -(player1.halfWidthPlayer) and newLevel == False:
                         player1.mapId = player1.mapId - 1
@@ -566,36 +590,34 @@ def gotoMission(player, player2):
                     player2.direction = 2
                     newLevel = False
 
-
-
                 # Shoot with bullet
                 if event.key == pygame.K_SPACE :
-                    if player.ammunition > 0:
-                        shootsound.play()
+                    if player1.ammunition > 0:
+                        shootSound.play()
                         if player1.direction == 8:
                             bullet = BulletVertical()
                             bullet.direction = 8
-                            bullet.rect.x = player.rect.x + 24
-                            bullet.rect.y = player.rect.y
+                            bullet.rect.x = player1.rect.x + 24
+                            bullet.rect.y = player1.rect.y
                         if player1.direction == 6:
                             bullet = BulletHorizontal()
                             bullet.direction = 6
-                            bullet.rect.x = player.rect.x + 48
-                            bullet.rect.y = player.rect.y + 32
+                            bullet.rect.x = player1.rect.x + 48
+                            bullet.rect.y = player1.rect.y + 32
                         if player1.direction == 4:
                             bullet = BulletHorizontal()
                             bullet.direction = 4
-                            bullet.rect.x = player.rect.x 
-                            bullet.rect.y = player.rect.y + 32
+                            bullet.rect.x = player1.rect.x 
+                            bullet.rect.y = player1.rect.y + 32
                         if player1.direction == 2:
                             bullet = BulletVertical()
                             bullet.direction = 2
-                            bullet.rect.x = player.rect.x + 24
-                            bullet.rect.y = player.rect.y + 64
+                            bullet.rect.x = player1.rect.x + 24
+                            bullet.rect.y = player1.rect.y + 64
 
                         all_sprites_list.add(bullet)
                         bullet_list.add(bullet)
-                        player.ammunition -=1
+                        player1.ammunition -=1
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT:
@@ -618,7 +640,6 @@ def gotoMission(player, player2):
 
 
         player1.update(all_sprites_list)
-
         player2.update(all_sprites_list)
 
         # Calculate mechanics for each bullet
@@ -638,20 +659,21 @@ def gotoMission(player, player2):
 
             if pygame.sprite.spritecollide(bullet, wall_list, False):
                 print "Hit: wall"
-                boomsound.play()
+                boomSound.play()
                 bullet_list.remove(bullet)
                 all_sprites_list.remove(bullet)
 
             # See if it hit a item
             item_hit_list = pygame.sprite.spritecollide(bullet, item_list, True)
 
-            # For each item hit, remove the bullet and add to the player.score
+            # For each item hit, remove the bullet and add to the player1.score
             for item in item_hit_list:
                 print "Hit: item"
-                boomsound.play()
+                boomSound.play()
                 bullet_list.remove(bullet)
                 all_sprites_list.remove(bullet)
-                player.score += 1
+                player1.score += 1
+                saveItemMap(player1.mapId, item_list)
 
             # Remove the bullet if it flies up off the screen
             if bullet.rect.x > (30*32) or bullet.rect.x < 0 or bullet.rect.y > (15*32) or bullet.rect.y < 0:

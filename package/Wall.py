@@ -9,13 +9,13 @@ class Wall(GraphicSprite.GraphicSprite):
     x = 0
     y = 0    
     width = 0
-    height =0
+    height = 0
 
     def __init__(self,image, x, y, width, height):
         pygame.sprite.Sprite.__init__(self)
         self.image = "sprites/wall/" + image
-        self.tilex = 32*1
-        self.tiley = 32*1
+        self.tilex = 32 * 1
+        self.tiley = 32 * 1
         self.x = x * 32
         self.y = y * 32
         self.width = width
