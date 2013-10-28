@@ -6,6 +6,7 @@ import os
 import webbrowser
 import time
 import sqlite3 as lite
+import math
 
 sys.path.append('./package')
 
@@ -635,44 +636,55 @@ def gotoMission(gotoMap, player, player2):
                     player1.changeSpeed(-player1.speed, 0)
                     player1.direction = 4
                     newLevel = False
-                    if zombiMap != -1:
-                        for zombi in zombi_list:
-                            if zombi.name == "zombi0":
-                                zombi.changeSpeed(zombi.speed, 0)
-                                zombi.direction = 6
 
                 if event.key == pygame.K_RIGHT:
                     player1.changeSpeed(player1.speed, 0)
                     player1.direction = 6
                     newLevel = False
                     
-                    if zombiMap != -1:
-                        for zombi in zombi_list:
-                            if zombi.name == "zombi0":
-                                zombi.changeSpeed(-zombi.speed, 0)
-                                zombi.direction = 4
-
                 if event.key == pygame.K_UP:
                     player1.changeSpeed(0, -player1.speed)
                     player1.direction = 8
                     newLevel = False
-
-                    if zombiMap != -1:
-                        for zombi in zombi_list:
-                            if zombi.name == "zombi0":
-                                zombi.changeSpeed(0, zombi.speed)
-                                zombi.direction = 2
 
                 if event.key == pygame.K_DOWN:
                     player1.changeSpeed(0, player1.speed)
                     player1.direction = 2
                     newLevel = False
 
-                    if zombiMap != -1:
-                        for zombi in zombi_list:
+
+                # Zombi Intelligence Artificial
+                if zombiMap == currentMapId:
+                    zombiSpeed = 1
+                    for zombi in zombi_list:    
                             if zombi.name == "zombi0":
-                                zombi.changeSpeed(0, -zombi.speed)
-                                zombi.direction = 8
+                                distanceX = math.fabs(zombi.rect.x - player1.rect.x)
+                                distanceY = math.fabs(zombi.rect.y - player1.rect.y)
+
+                                # On the right
+                                if zombi.rect.x > player1.rect.x :
+                                    if distanceX < distanceY :
+                                        zombi.changeSpeed(zombiSpeed, 0)
+                                    else:
+                                        zombi.changeSpeed(0, zombiSpeed)   
+                                # On the left
+                                if zombi.rect.x < player1.rect.x:
+                                    if distanceX < distanceY :
+                                        zombi.changeSpeed(zombiSpeed, 0)
+                                    else:
+                                        zombi.changeSpeed(0, zombiSpeed)
+                                # On the top
+                                if zombi.rect.y > player1.rect.y :
+                                    if distanceX < distanceY :
+                                        zombi.changeSpeed(zombiSpeed, 0)
+                                    else:
+                                        zombi.changeSpeed(0, -zombiSpeed)
+                                # On the bottom
+                                if zombi.rect.y < player1.rect.y :
+                                    if distanceX < distanceY :
+                                        zombi.changeSpeed(0, zombiSpeed)
+                                    else:
+                                        zombi.changeSpeed(zombiSpeed, 0)
 
 
                 # Komando2
@@ -693,21 +705,6 @@ def gotoMission(gotoMap, player, player2):
                     player2.direction = 2
                     newLevel = False
 
-                """
-                # Move the zombie
-                if event.key == pygame.K_e:
-                    zombi0.changeSpeed(-zombi0.speed, 0)
-                    zombi0.direction = 4
-                if event.key == pygame.K_r:
-                    zombi0.changeSpeed(zombi0.speed, 0)
-                    zombi0.direction = 6
-                if event.key == pygame.K_t:
-                    zombi0.changeSpeed(0, -zombi0.speed)
-                    zombi0.direction = 8
-                if event.key == pygame.K_y:
-                    zombi0.changeSpeed(0, zombi0.speed)
-                    zombi0.direction = 2
-                """
 
                 # Shoot with bullet
                 if event.key == pygame.K_SPACE :
@@ -742,35 +739,15 @@ def gotoMission(gotoMap, player, player2):
                 # Player 1
                 if event.key == pygame.K_LEFT:
                     player1.changeSpeed(player1.speed, 0)
-                    if zombiMap != -1:
-                        for zombi in zombi_list:
-                            if zombi.name == "zombi0":
-                                zombi.changeSpeed(-zombi.speed, 0)
-
 
                 if event.key == pygame.K_RIGHT:
                     player1.changeSpeed(-player1.speed, 0)
 
-                    if zombiMap != -1:
-                        for zombi in zombi_list:
-                            if zombi.name == "zombi0":
-                                zombi.changeSpeed(zombi.speed, 0)
-
                 if event.key == pygame.K_UP:
                     player1.changeSpeed(0, player1.speed)
 
-                    if zombiMap != -1:
-                        for zombi in zombi_list:
-                            if zombi.name == "zombi0":
-                                zombi.changeSpeed(0, -zombi.speed)
-
                 if event.key == pygame.K_DOWN:
                     player1.changeSpeed(0, -player1.speed)
-
-                    if zombiMap != -1:                    
-                        for zombi in zombi_list:
-                            if zombi.name == "zombi0":
-                                zombi.changeSpeed(0, zombi.speed)
 
                 # Player 2
                 if event.key == pygame.K_j:
@@ -783,24 +760,12 @@ def gotoMission(gotoMap, player, player2):
                     player2.changeSpeed(0, -player2.speed)
 
 
-                """
-                if event.key == pygame.K_e:
-                    zombi0.changeSpeed(zombi0.speed,0)
-                if event.key == pygame.K_r:
-                    zombi0.changeSpeed(-zombi0.speed,0)
-                if event.key == pygame.K_t:
-                    zombi0.changeSpeed(0,zombi0.speed)
-                if event.key == pygame.K_y:
-                    zombi0.changeSpeed(0,-zombi0.speed)
-                """
-
-
         # Update all sprites
 
         player1.update(all_sprites_list)
         player2.update(all_sprites_list)
 
-        if zombiMap != -1:
+        if zombiMap == currentMapId:
             zombi_list.update(all_sprites_list)
 
         # Calculate mechanics for each bullet
