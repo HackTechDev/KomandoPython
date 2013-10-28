@@ -60,7 +60,7 @@ def viewMission():
     # Font
     font = pygame.font.Font(None, 36)
 
-    pygame.display.set_caption('Komando Python : Zomby Infiltration')
+    pygame.display.set_caption('Commando Python : Infiltration Zombi')
 
     background = pygame.Surface(screen.get_size())
 
@@ -200,7 +200,7 @@ def selectMission():
     # Font
     font = pygame.font.Font(None, 36)
 
-    pygame.display.set_caption('Komando Python : Zomby Infiltration')
+    pygame.display.set_caption('Commando Python : Infiltration Zombi')
 
     background = pygame.Surface(screen.get_size())
 
@@ -355,7 +355,7 @@ def gotoMission(gotoMap, player, player2):
     font  = pygame.font.Font(None, 36)
     font1 = pygame.font.Font(None, 18)
 
-    pygame.display.set_caption('Komando Python : Zomby Infiltration')
+    pygame.display.set_caption('Commando Python : Infiltration Zombi')
 
     # Panel
     image_fnscar = pygame.image.load("images/panel/gun_fnscar.png").convert()
@@ -652,41 +652,6 @@ def gotoMission(gotoMap, player, player2):
                     player1.direction = 2
                     newLevel = False
 
-
-                # Zombi Intelligence Artificial
-                if zombiMap == currentMapId:
-                    zombiSpeed = 1
-                    for zombi in zombi_list:    
-                            if zombi.name == "zombi0":
-                                distanceX = math.fabs(zombi.rect.x - player1.rect.x)
-                                distanceY = math.fabs(zombi.rect.y - player1.rect.y)
-
-                                # On the right
-                                if zombi.rect.x > player1.rect.x :
-                                    if distanceX < distanceY :
-                                        zombi.changeSpeed(zombiSpeed, 0)
-                                    else:
-                                        zombi.changeSpeed(0, zombiSpeed)   
-                                # On the left
-                                if zombi.rect.x < player1.rect.x:
-                                    if distanceX < distanceY :
-                                        zombi.changeSpeed(zombiSpeed, 0)
-                                    else:
-                                        zombi.changeSpeed(0, zombiSpeed)
-                                # On the top
-                                if zombi.rect.y > player1.rect.y :
-                                    if distanceX < distanceY :
-                                        zombi.changeSpeed(zombiSpeed, 0)
-                                    else:
-                                        zombi.changeSpeed(0, -zombiSpeed)
-                                # On the bottom
-                                if zombi.rect.y < player1.rect.y :
-                                    if distanceX < distanceY :
-                                        zombi.changeSpeed(0, zombiSpeed)
-                                    else:
-                                        zombi.changeSpeed(zombiSpeed, 0)
-
-
                 # Komando2
                 if event.key == pygame.K_j:
                     player2.changeSpeed(-player2.speed, 0)
@@ -735,6 +700,7 @@ def gotoMission(gotoMap, player, player2):
                         bullet_list.add(bullet)
                         player1.ammunition -=1
 
+          
             if event.type == pygame.KEYUP:
                 # Player 1
                 if event.key == pygame.K_LEFT:
@@ -758,6 +724,33 @@ def gotoMission(gotoMap, player, player2):
                     player2.changeSpeed(0, player2.speed)
                 if event.key == pygame.K_k:
                     player2.changeSpeed(0, -player2.speed)
+
+        # Zombi Intelligence Artificial
+        # Left   <-  (-s, 0)
+        # Right  ->  (s, 0)
+        # Up      ^  (0, -s)
+        # Down    _  (0, s)
+
+        if zombiMap == currentMapId:
+            zombiSpeed = 0.1
+            for zombi in zombi_list:    
+                    if zombi.name == "zombi0":
+                        distanceX = math.fabs(zombi.rect.x - player1.rect.x)
+                        distanceY = math.fabs(zombi.rect.y - player1.rect.y)
+
+                        # On the right
+                        if zombi.rect.x > player1.rect.x :
+                            zombi.changeSpeed(-zombiSpeed, 0)
+                        # On the left
+                        if zombi.rect.x < player1.rect.x:
+                            zombi.changeSpeed(zombiSpeed, 0)
+                        # On the bottom
+                        if zombi.rect.y > player1.rect.y :
+                            zombi.changeSpeed(0, -zombiSpeed)
+                        # On the top
+                        if zombi.rect.y < player1.rect.y :
+                            zombi.changeSpeed(0, zombiSpeed)
+
 
 
         # Update all sprites
@@ -877,11 +870,17 @@ def gotoMission(gotoMap, player, player2):
         all_sprites_list.draw(screen)
 
         # Panel
-        textScore=font.render("Score : "+str(player1.score), True, blue)
-        screen.blit(textScore, [0, 32*16])
+        textName = font.render("Codename : "+str(player1.name), True, green)
+        screen.blit(textName, [0, 32*16])
 
-        textAmmunition=font.render("Ammunition : "+str(player1.ammunition), True, blue)
-        screen.blit(textAmmunition, [0, 32*17])
+        textLife = font.render("Life : "+str(player1.life), True, green)
+        screen.blit(textLife, [0, 32*17])
+
+        textAmmunition = font.render("Ammunition : "+str(player1.ammunition), True, green)
+        screen.blit(textAmmunition, [0, 32*18])
+
+        textScore = font.render("Score : "+str(player1.score), True, green)
+        screen.blit(textScore, [0, 32*19])
 
         screen.blit(bar_bottom, [0,480])
         screen.blit(bar_right, [960,0])
@@ -921,7 +920,7 @@ def main():
     # Font
     font = pygame.font.Font(None, 36)
 
-    pygame.display.set_caption('Komando Python : Zomby Infiltration')
+    pygame.display.set_caption('Commando Python : Infiltration Zombi')
 
     background = pygame.Surface(screen.get_size())
 
@@ -934,7 +933,7 @@ def main():
 
     # Title screen
 
-    titleScreen=font.render("Komando Python : Zomby Infiltration", True, blue)
+    titleScreen=font.render("Commando Python : Infiltration Zombi", True, blue)
     titleScreenRect = titleScreen.get_rect()
     screen.blit(titleScreenImage, [120,0])
     screen.blit(titleScreen, [130,10])
@@ -983,7 +982,7 @@ def main():
 
     # End title screen
 
-    titleScreen=font.render("Komando Python : Zomby Infiltration", True, blue)
+    titleScreen=font.render("Commando Python : Infiltration Zombi", True, blue)
     titleScreenRect = titleScreen.get_rect()
     screen.fill(black)
     screen.blit(titleScreenImage, [120,0])
