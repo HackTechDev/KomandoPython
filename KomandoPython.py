@@ -531,104 +531,102 @@ def gotoMission(gotoMap, player, player2):
                     print "Current player2 position: " + str(player2.mapId) + " " + str(player2.rect.x) + " " + str(player2.rect.y)
 
                 # Change level
-                if event.key == pygame.K_n:
-                    # Left border
-                    if player1.rect.x <= -(player1.halfWidthPlayer) and newLevel == False:
-                        saveWallMap(player1.mapId, wall_list)
-                        player1.mapId = player1.mapId - 1
-                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
-                        nextlevel = Level(player1.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
-                        player1.rect.x = (32 * 30) - player1.halfWidthPlayer
-                        newLevel = True;
-                        displayPlayer = 1
-                        print "Left: Move to: " + str(player1.mapId) + " " + str(player1.rect.x) + " " + str(player1.rect.y)
-                        currentMapId = player1.mapId
-                        
-                        
-                    # Right Border
-                    if player1.rect.x >= (30 * 32) - player1.halfWidthPlayer and newLevel == False:
-                        saveWallMap(player1.mapId, wall_list)
-                        player1.mapId = player1.mapId + 1
-                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
-                        nextlevel = Level(player1.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
-                        player1.rect.x = -(player1.halfWidthPlayer)
-                        newLevel = True;
-                        displayPlayer = 1
-                        print "Right: Move to: " + str(player1.mapId) + " " + str(player1.rect.x) + " " + str(player1.rect.y)
-                        currentMapId = player1.mapId
+                # Left border
+                if player1.direction == 4 and player1.rect.x <= -(player1.halfWidthPlayer) and newLevel == False:
+                    saveWallMap(player1.mapId, wall_list)
+                    player1.mapId = player1.mapId - 1
+                    currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
+                    nextlevel = Level(player1.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
+                    player1.rect.x = (32 * 30) - player1.halfWidthPlayer
+                    newLevel = True;
+                    displayPlayer = 1
+                    print "Left: Move to: " + str(player1.mapId) + " " + str(player1.rect.x) + " " + str(player1.rect.y)
+                    currentMapId = player1.mapId
+                
+                # Right Border
+                if player1.direction == 6 and player1.rect.x >= (30 * 32) - player1.halfWidthPlayer and newLevel == False:
+                    saveWallMap(player1.mapId, wall_list)
+                    player1.mapId = player1.mapId + 1
+                    currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
+                    nextlevel = Level(player1.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
+                    player1.rect.x = -(player1.halfWidthPlayer)
+                    newLevel = True;
+                    displayPlayer = 1
+                    print "Right: Move to: " + str(player1.mapId) + " " + str(player1.rect.x) + " " + str(player1.rect.y)
+                    currentMapId = player1.mapId
 
-                    # Top border
-                    if player1.rect.y <= -(player1.halfHeightPlayer) and newLevel == False:
-                        saveWallMap(player1.mapId, wall_list)
-                        player1.mapId = player1.mapId - 21 
-                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
-                        nextlevel = Level(player1.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
-                        player1.rect.y = (32*15) - player1.halfHeightPlayer
-                        newLevel = True;
-                        displayPlayer = 1
-                        print "Top: Move to: " + str(player1.mapId) + " " + str(player1.rect.x) + " " + str(player1.rect.y)
-                        currentMapId = player1.mapId
+                # Top border
+                if player1.direction == 8 and player1.rect.y <= -(player1.halfHeightPlayer) and newLevel == False:
+                    saveWallMap(player1.mapId, wall_list)
+                    player1.mapId = player1.mapId - 21 
+                    currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
+                    nextlevel = Level(player1.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
+                    player1.rect.y = (32*15) - player1.halfHeightPlayer
+                    newLevel = True;
+                    displayPlayer = 1
+                    print "Top: Move to: " + str(player1.mapId) + " " + str(player1.rect.x) + " " + str(player1.rect.y)
+                    currentMapId = player1.mapId
 
-                    # Bottom Border
-                    if player1.rect.y >= (32*15) - player1.halfHeightPlayer and newLevel == False:
-                        saveWallMap(player1.mapId, wall_list)
-                        player1.mapId = player1.mapId + 21
-                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
-                        nextlevel = Level(player1.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
-                        player1.rect.y = -(player1.halfHeightPlayer)
-                        newLevel = True;
-                        displayPlayer = 1
-                        print "Bottom: Move to: " + str(player1.mapId) + " " + str(player1.rect.x) + " " + str(player1.rect.y)
-                        currentMapId = player1.mapId
+                # Bottom Border
+                if player1.direction == 2 and player1.rect.y >= (32*15) - player1.halfHeightPlayer and newLevel == False:
+                    saveWallMap(player1.mapId, wall_list)
+                    player1.mapId = player1.mapId + 21
+                    currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
+                    nextlevel = Level(player1.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
+                    player1.rect.y = -(player1.halfHeightPlayer)
+                    newLevel = True;
+                    displayPlayer = 1
+                    print "Bottom: Move to: " + str(player1.mapId) + " " + str(player1.rect.x) + " " + str(player1.rect.y)
+                    currentMapId = player1.mapId
 
-                if event.key == pygame.K_b:
-                    # Left border
-                    if player2.rect.x <= -(player2.halfWidthPlayer) and newLevel == False:
-                        saveWallMap(player2.mapId, wall_list)
-                        player2.mapId = player2.mapId - 1
-                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
-                        nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
-                        player2.rect.x = (32 * 30) - player2.halfWidthPlayer
-                        newLevel = True;
-                        displayPlayer = 2
-                        print "Left: Move to: " + str(player2.mapId) + " " + str(player2.rect.x) + " " + str(player2.rect.y)
-                        currentMapId = player2.mapId
-                        
-                    # Right Border
-                    if player2.rect.x >= (30 * 32) - player2.halfWidthPlayer and newLevel == False:
-                        saveWallMap(player2.mapId, wall_list)
-                        player2.mapId = player2.mapId + 1
-                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
-                        nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
-                        player2.rect.x = -(player2.halfWidthPlayer)
-                        newLevel = True;
-                        displayPlayer = 2
-                        print "Right: Move to: " + str(player2.mapId) + " " + str(player2.rect.x) + " " + str(player2.rect.y)
-                        currentMapId = player2.mapId
 
-                    # Top border
-                    if player2.rect.y <= -(player2.halfHeightPlayer) and newLevel == False:
-                        saveWallMap(player2.mapId, wall_list)
-                        player2.mapId = player2.mapId - 21 
-                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
-                        nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
-                        player2.rect.y = (32*15) - player2.halfHeightPlayer
-                        newLevel = True;
-                        displayPlayer = 2
-                        print "Top: Move to: " + str(player2.mapId) + " " + str(player2.rect.x) + " " + str(player2.rect.y)
-                        currentMapId = player2.mapId
+                # Left border
+                if player2.direction == 4 and player2.rect.x <= -(player2.halfWidthPlayer) and newLevel == False:
+                    saveWallMap(player2.mapId, wall_list)
+                    player2.mapId = player2.mapId - 1
+                    currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
+                    nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
+                    player2.rect.x = (32 * 30) - player2.halfWidthPlayer
+                    newLevel = True;
+                    displayPlayer = 2
+                    print "Left: Move to: " + str(player2.mapId) + " " + str(player2.rect.x) + " " + str(player2.rect.y)
+                    currentMapId = player2.mapId
+                    
+                # Right Border
+                if player2.direction == 6 and player2.rect.x >= (30 * 32) - player2.halfWidthPlayer and newLevel == False:
+                    saveWallMap(player2.mapId, wall_list)
+                    player2.mapId = player2.mapId + 1
+                    currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
+                    nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
+                    player2.rect.x = -(player2.halfWidthPlayer)
+                    newLevel = True;
+                    displayPlayer = 2
+                    print "Right: Move to: " + str(player2.mapId) + " " + str(player2.rect.x) + " " + str(player2.rect.y)
+                    currentMapId = player2.mapId
 
-                    # Bottom Border
-                    if player2.rect.y >= (32*15) - player2.halfHeightPlayer and newLevel == False:
-                        saveWallMap(player2.mapId, wall_list)
-                        player2.mapId = player2.mapId + 21
-                        currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
-                        nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
-                        player2.rect.y = -(player2.halfHeightPlayer)
-                        newLevel = True;
-                        displayPlayer = 2
-                        print "Bottom: Move to: " + str(player2.mapId) + " " + str(player2.rect.x) + " " + str(player2.rect.y)
-                        currentMapId = player2.mapId
+                # Top border
+                if player2.direction == 8 and player2.rect.y <= -(player2.halfHeightPlayer) and newLevel == False:
+                    saveWallMap(player2.mapId, wall_list)
+                    player2.mapId = player2.mapId - 21 
+                    currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
+                    nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
+                    player2.rect.y = (32*15) - player2.halfHeightPlayer
+                    newLevel = True;
+                    displayPlayer = 2
+                    print "Top: Move to: " + str(player2.mapId) + " " + str(player2.rect.x) + " " + str(player2.rect.y)
+                    currentMapId = player2.mapId
+
+                # Bottom Border
+                if  player2.direction == 2 and player2.rect.y >= (32*15) - player2.halfHeightPlayer and newLevel == False:
+                    saveWallMap(player2.mapId, wall_list)
+                    player2.mapId = player2.mapId + 21
+                    currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
+                    nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
+                    player2.rect.y = -(player2.halfHeightPlayer)
+                    newLevel = True;
+                    displayPlayer = 2
+                    print "Bottom: Move to: " + str(player2.mapId) + " " + str(player2.rect.x) + " " + str(player2.rect.y)
+                    currentMapId = player2.mapId
 
                 # Players movement
                 # Komando1
