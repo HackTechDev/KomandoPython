@@ -259,7 +259,7 @@ def makeMenu(pos = 0):
         ["View Commando", viewCommando],
         ["Select Mission", selectMission],
         ["View Current Mission", viewMission],
-        ["Visit Komado Python homepage", lambda: gameUrl("http://KomandoPython.com")],
+        ["View Maps", lambda: gameUrl("./displayWorld.html")],
         ["Quit Game", gameQuit] )
     
     Config.menu.center_at(320, 240)
