@@ -1,8 +1,12 @@
 #!/bin/sh
 
-rm maps/*
+rm maps/*.b.txt
+rm maps/*.w.txt
 ./angKomando.bin > world.raw
-php ./generateMaps.php
-mv world.raw maps
+
+/opt/lampp/bin/php ./generateMaps.php
+#php ./generateMaps.php
+
+cp world.raw maps
 
 firefox displayWorld.html

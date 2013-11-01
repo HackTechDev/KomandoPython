@@ -241,17 +241,18 @@ def selectMission():
                 break
 
 def gameUrl(url):
-    print "KomandoPython.com"
+    #print "KomandoPython.com"
     webbrowser.open_new_tab(url)
 
 def makeMenu(pos = 0):
     
     # Fake datas
-    gotoMap = MapInfo(217)
     player1 = Player("player1")
     player2 = Player("player2")
 
-    print "makeMenu: " + str(gotoMap.Id)
+    gotoMap = MapInfo(player1.mapId)
+
+    #print "makeMenu: " + str(gotoMap.mapId)
 
     Config.menu = ezmenu.EzMenu(
         ["Go to the Mission", lambda: gotoMission(gotoMap, player1, player2)],
@@ -333,7 +334,30 @@ def savePlayer(player):
             str(player.life) + ":" + str(player.ammunition) + ":" + str(player.direction) + ":" + str(player.score) + ":" + str(player.speed))
     f.close()
 
-def gotoMission(gotoMap, player, player2):
+def loadZombiMap(mapId, zombi_list):
+    try: 
+        file = open("maps/" + str(mapId) + ".z.txt", "r")
+        print "Load: zombis of map: " + str(mapId) + ".z.txt"
+    except IOError:
+        print "No zombis"
+        return -1
+    else:
+        line_list = file.readlines()
+        file.close()
+
+        countZombi = 0 
+        for line in line_list:
+            line = line[:-1]
+            val = line.split(":")
+            
+            zombi = Zombi(str(countZombi), "zombi" + str(countZombi), val[0], val[1], val[2], val[3], val[4], val[5], val[6], val[7] )
+            zombi_list.add(zombi)
+         
+            countZombi = countZombi + 1
+
+        return mapId
+
+def gotoMission(gotoMap, player1, player2):
     Config.mission = True
     # Setup mixer to avoid sound lag
     pygame.mixer.pre_init(44100, -16, 2, 2048)
@@ -364,8 +388,8 @@ def gotoMission(gotoMap, player, player2):
 
     # Initialization players
 
-    player1 = Player("player1")
-    player2 = Player("player2")
+    #player1 = Player("player1")
+    #player2 = Player("player2")
 
     player1MovingSprites = pygame.sprite.RenderPlain()
     player1MovingSprites.add(player1)
@@ -376,28 +400,10 @@ def gotoMission(gotoMap, player, player2):
     # Initialization zombis
 
     zombi_list = pygame.sprite.RenderPlain()
-    try: 
-        file = open("maps/" + str(gotoMap.Id) +".z.txt", "r")
-        print "Load: zombis"
-    except IOError:
-        print "No zombis"
-        zombiMap = -1
-    else:
-        line_list = file.readlines()
-        file.close()
 
-        countZombi = 0 
-        for line in line_list:
-            line = line[:-1]
-            val = line.split(":")
-            
-            zombi = Zombi(str(countZombi), "zombi" + str(countZombi), val[0], val[1], val[2], val[3], val[4], val[5], val[6], val[7] )
-            zombi_list.add(zombi)
-         
-            countZombi = countZombi + 1
-
-        zombiMap = gotoMap.Id
-     
+    zombiMap = loadZombiMap(gotoMap.mapId, zombi_list)
+    print str(zombiMap)
+        
     # Sprites
     all_sprites_list = pygame.sprite.RenderPlain()
 
@@ -414,7 +420,8 @@ def gotoMission(gotoMap, player, player2):
 
     # Load level (default level)
     way_list = list()
-    currentlevel = Level(gotoMap.Id, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
+    currentlevel = Level(gotoMap.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
+
 
     clock = pygame.time.Clock()
 
@@ -427,11 +434,10 @@ def gotoMission(gotoMap, player, player2):
 
     displayPlayer = 1
 
-    displayCharacPlayer1 = False
+    displayCharacPlayer1 = False 
     displayCharacPlayer2 = False
 
-    # Default player1.mapId
-    currentMapId = gotoMap.Id
+    currentMapId = gotoMap.mapId
 
     # Main game loop
 
@@ -451,23 +457,23 @@ def gotoMission(gotoMap, player, player2):
                     #print "wall: " + str(wall.x / 32) + " " + str(wall.y / 32)
                     # Delete wall
                     if( mousex > wall.x and mousex < wall.x + 32 and mousey > wall.y and mousey < wall.y + 32):
-                        print "Delete wall" 
+                        #print "Delete wall" 
                         wall_list.remove(wall)
                         all_sprites_list.remove(wall)
 
                 if mousex > player1.rect.x and mousex < player1.rect.x + 48 and mousey > player1.rect.y and mousey < player1.rect.y + 64:
                     if displayCharacPlayer1 == False:
-                        print "Display CharacPlayer1"
+                        #print "Display CharacPlayer1"
                         displayCharacPlayer1 = True
                     else:
-                        print "Not Display CharacPlayer1"
+                        #print "Not Display CharacPlayer1"
                         displayCharacPlayer1 = False
                 if mousex > player2.rect.x and mousex < player2.rect.x + 48 and mousey > player2.rect.y and mousey < player2.rect.y + 64:
                     if displayCharacPlayer2 == False:
-                        print "Display CharacPlayer2"
+                        #print "Display CharacPlayer2"
                         displayCharacPlayer2 = True
                     else:
-                        print "Not Display CharacPlayer2"
+                        #print "Not Display CharacPlayer2"
                         displayCharacPlayer2 = False
 
 
@@ -475,16 +481,16 @@ def gotoMission(gotoMap, player, player2):
 
             # Right mouse click
             if pygame.mouse.get_pressed()[2] == True:        
-                print "Add wall"
+                #print "Add wall"
                 mousex = pygame.mouse.get_pos()[0]
                 mousey = pygame.mouse.get_pos()[1]
-                print str((mousex ) ) + " " + str( (mousey ) ) + " " + str(mousex - (mousex % 32) ) + " " + str( mousey-(mousey % 32) )
+                #print str((mousex ) ) + " " + str( (mousey ) ) + " " + str(mousex - (mousex % 32) ) + " " + str( mousey-(mousey % 32) )
                 wall = Wall("int_wall_bricks.png", (mousex - (mousex % 32)) / 32, (mousey-(mousey % 32)) / 32, 32, 32)
                 wall_list.add(wall)
                 all_sprites_list.add(wall)
                 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_q:
+                if event.key == pygame.K_q and displayPlayer == 1:
                     gameloop = True
                     Config.mission = False;
                     # Save all
@@ -512,14 +518,14 @@ def gotoMission(gotoMap, player, player2):
 
                 # Switch between player
                 if event.key == pygame.K_F1 and (player1.mapId != player2.mapId):
-                    print "Komando1"
+                    #print "Komando1"
                     displayPlayer = 1
                     currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
                     nextlevel = Level(player1.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
                     currentMapId = player1.mapId                 
    
                 if event.key == pygame.K_F2 and (player1.mapId != player2.mapId):
-                    print "Komando2"
+                    #print "Komando2"
                     displayPlayer = 2
                     currentlevel.empty(way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
                     nextlevel = Level(player2.mapId, way_list, ground_list, wall_list, all_sprites_list, item_list, npc_list)
@@ -540,7 +546,7 @@ def gotoMission(gotoMap, player, player2):
                     player1.rect.x = (32 * 30) - player1.halfWidthPlayer
                     newLevel = True;
                     displayPlayer = 1
-                    print "Left: Move to: " + str(player1.mapId) + " " + str(player1.rect.x) + " " + str(player1.rect.y)
+                    #print "Left: Move to: " + str(player1.mapId) + " " + str(player1.rect.x) + " " + str(player1.rect.y)
                     currentMapId = player1.mapId
                 
                 # Right Border
@@ -552,7 +558,7 @@ def gotoMission(gotoMap, player, player2):
                     player1.rect.x = -(player1.halfWidthPlayer)
                     newLevel = True;
                     displayPlayer = 1
-                    print "Right: Move to: " + str(player1.mapId) + " " + str(player1.rect.x) + " " + str(player1.rect.y)
+                    #print "Right: Move to: " + str(player1.mapId) + " " + str(player1.rect.x) + " " + str(player1.rect.y)
                     currentMapId = player1.mapId
 
                 # Top border
@@ -564,7 +570,7 @@ def gotoMission(gotoMap, player, player2):
                     player1.rect.y = (32*15) - player1.halfHeightPlayer
                     newLevel = True;
                     displayPlayer = 1
-                    print "Top: Move to: " + str(player1.mapId) + " " + str(player1.rect.x) + " " + str(player1.rect.y)
+                    #print "Top: Move to: " + str(player1.mapId) + " " + str(player1.rect.x) + " " + str(player1.rect.y)
                     currentMapId = player1.mapId
 
                 # Bottom Border
@@ -576,7 +582,7 @@ def gotoMission(gotoMap, player, player2):
                     player1.rect.y = -(player1.halfHeightPlayer)
                     newLevel = True;
                     displayPlayer = 1
-                    print "Bottom: Move to: " + str(player1.mapId) + " " + str(player1.rect.x) + " " + str(player1.rect.y)
+                    #print "Bottom: Move to: " + str(player1.mapId) + " " + str(player1.rect.x) + " " + str(player1.rect.y)
                     currentMapId = player1.mapId
 
 
@@ -589,7 +595,7 @@ def gotoMission(gotoMap, player, player2):
                     player2.rect.x = (32 * 30) - player2.halfWidthPlayer
                     newLevel = True;
                     displayPlayer = 2
-                    print "Left: Move to: " + str(player2.mapId) + " " + str(player2.rect.x) + " " + str(player2.rect.y)
+                    #print "Left: Move to: " + str(player2.mapId) + " " + str(player2.rect.x) + " " + str(player2.rect.y)
                     currentMapId = player2.mapId
                     
                 # Right Border
@@ -601,7 +607,7 @@ def gotoMission(gotoMap, player, player2):
                     player2.rect.x = -(player2.halfWidthPlayer)
                     newLevel = True;
                     displayPlayer = 2
-                    print "Right: Move to: " + str(player2.mapId) + " " + str(player2.rect.x) + " " + str(player2.rect.y)
+                    #print "Right: Move to: " + str(player2.mapId) + " " + str(player2.rect.x) + " " + str(player2.rect.y)
                     currentMapId = player2.mapId
 
                 # Top border
@@ -613,7 +619,7 @@ def gotoMission(gotoMap, player, player2):
                     player2.rect.y = (32*15) - player2.halfHeightPlayer
                     newLevel = True;
                     displayPlayer = 2
-                    print "Top: Move to: " + str(player2.mapId) + " " + str(player2.rect.x) + " " + str(player2.rect.y)
+                    #print "Top: Move to: " + str(player2.mapId) + " " + str(player2.rect.x) + " " + str(player2.rect.y)
                     currentMapId = player2.mapId
 
                 # Bottom Border
@@ -625,7 +631,7 @@ def gotoMission(gotoMap, player, player2):
                     player2.rect.y = -(player2.halfHeightPlayer)
                     newLevel = True;
                     displayPlayer = 2
-                    print "Bottom: Move to: " + str(player2.mapId) + " " + str(player2.rect.x) + " " + str(player2.rect.y)
+                    #print "Bottom: Move to: " + str(player2.mapId) + " " + str(player2.rect.x) + " " + str(player2.rect.y)
                     currentMapId = player2.mapId
 
                 # Players movement
@@ -798,7 +804,7 @@ def gotoMission(gotoMap, player, player2):
 
             # For each npc hit, remove the bullet and add to the player1.score
             for npc in npc_hit_list:
-                print "Hit: npc"
+                #print "Hit: npc"
                 boomSound.play()
                 bullet_list.remove(bullet)
                 all_sprites_list.remove(bullet)
@@ -868,24 +874,43 @@ def gotoMission(gotoMap, player, player2):
         all_sprites_list.draw(screen)
 
         # Panel
-        textName = font.render("Codename : "+str(player1.name), True, green)
-        screen.blit(textName, [0, 32*16])
 
-        textLife = font.render("Life : "+str(player1.life), True, green)
-        screen.blit(textLife, [0, 32*17])
+        # Player information
+        if displayPlayer == 1:        
+            textName = font.render("Codename: " + str(player1.name), True, green)
+            screen.blit(textName, [0, 32*16])
 
-        textAmmunition = font.render("Ammunition : "+str(player1.ammunition), True, green)
-        screen.blit(textAmmunition, [0, 32*18])
+            textLife = font.render("Life: " + str(player1.life), True, green)
+            screen.blit(textLife, [0, 32*17])
 
-        textScore = font.render("Score : "+str(player1.score), True, green)
-        screen.blit(textScore, [0, 32*19])
+            textAmmunition = font.render("Ammunition: " + str(player1.ammunition), True, green)
+            screen.blit(textAmmunition, [0, 32*18])
+
+            textScore = font.render("Score: " + str(player1.score), True, green)
+            screen.blit(textScore, [0, 32*19])
+
+            textPlayer1MapId = font.render("Map: " + str(player1.mapId), True, green)
+            screen.blit(textPlayer1MapId, [992, 0])
+
+        if displayPlayer == 2:        
+            textName = font.render("Codename : " + str(player2.name), True, green)
+            screen.blit(textName, [0, 32*16])
+
+            textLife = font.render("Life: " + str(player2.life), True, green)
+            screen.blit(textLife, [0, 32*17])
+
+            textAmmunition = font.render("Ammunition: " + str(player2.ammunition), True, green)
+            screen.blit(textAmmunition, [0, 32*18])
+
+            textScore = font.render("Score: " + str(player2.score), True, green)
+            screen.blit(textScore, [0, 32*19])
+
+            textPlayer2MapId = font.render("Map: " + str(player2.mapId), True, green)
+            screen.blit(textPlayer2MapId, [992, 0])
 
         screen.blit(bar_bottom, [0,480])
         screen.blit(bar_right, [960,0])
-        screen.blit(image_fnscar, [960,10])
-
-        
-
+        #screen.blit(image_fnscar, [960,10])
 
         # Display
         pygame.display.flip()

@@ -1,4 +1,4 @@
 class MapInfo():
-    Id = 0
-    def __init__(self, Id):
-        self.Id = Id
+    mapId = 0
+    def __init__(self, mapId):
+        self.mapId = mapId

@@ -44,7 +44,8 @@ class Player(pygame.sprite.Sprite):
     
         self.name = name
 
-        print "Initialization " + self.name
+        #print "Initialization " + self.name
+
         f = open("player/" + self.name + ".txt", "r")
         for line in f:
             val1, val2, val3, val4, val5, val6, val7, val8  = line.split(":") 
