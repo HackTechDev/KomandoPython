@@ -396,13 +396,9 @@ def gotoMission(gotoMap, player1, player2):
     player2MovingSprites = pygame.sprite.RenderPlain()
     player2MovingSprites.add(player2)
 
-    
     # Initialization zombis
-
     zombi_list = pygame.sprite.RenderPlain()
-
     zombiMap = loadZombiMap(gotoMap.mapId, zombi_list)
-    print str(zombiMap)
         
     # Sprites
     all_sprites_list = pygame.sprite.RenderPlain()
@@ -430,7 +426,6 @@ def gotoMission(gotoMap, player1, player2):
     newLevel = False
 
     debug = False
-
 
     displayPlayer = 1
 

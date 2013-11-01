@@ -12,6 +12,7 @@ Move: Arrow keys
 Shoot: Space  
 Play/Stop music: m  
 Silent movement: s   
+Quit: q  
 
 Player2:  
 
