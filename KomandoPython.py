@@ -28,6 +28,8 @@ from NPC import *
 from Zombi import *
 from MapInfo import *
 
+from pgu import gui
+
 """
 
 Komando Python : Zomby Infiltration
@@ -50,10 +52,10 @@ def viewMission():
     pygame.init()
  
     # 48*25
-    screen_width=1200
+    screen_width = 1200
     # 64*12
-    screen_height=640
-    screen=pygame.display.set_mode([screen_width,screen_height])
+    screen_height = 640
+    screen = pygame.display.set_mode([screen_width, screen_height])
 
     # Background image
     titleScreenImage = pygame.image.load("images/fs.jpg").convert()
@@ -114,7 +116,7 @@ def viewCommando():
     screen_width = 1200
     # 64*12
     screen_height = 640
-    screen=pygame.display.set_mode([screen_width,screen_height])
+    screen=pygame.display.set_mode([screen_width, screen_height])
 
     # Background image
     titleScreenImage = pygame.image.load("images/fs.jpg").convert()
@@ -190,10 +192,10 @@ def selectMission():
     pygame.init()
  
     # 48*25
-    screen_width=1200
+    screen_width = 1200
     # 64*12
-    screen_height=640
-    screen=pygame.display.set_mode([screen_width,screen_height])
+    screen_height = 640
+    screen=pygame.display.set_mode([screen_width, screen_height])
 
     # Background image
     titleScreenImage = pygame.image.load("images/worldmap.png").convert()
@@ -358,6 +360,41 @@ def loadZombiMap(mapId, zombi_list):
 
         return mapId
 
+# GUI creation
+class ChatControl(gui.Table):
+    def __init__(self,**params):
+        gui.Table.__init__(self,**params)
+
+        self.value = gui.Form()
+        self.engine = None
+
+        self._data = ''
+
+        self._count = 1
+        self.focused = False
+
+
+        def clickChatMsg(value):
+            if self.focused:
+                self.focused = False
+            else:
+                self.focused = True
+
+
+        self.tr()
+        self.chatMsg = gui.Input(maxlength=128, width=468, focusable=False)
+        self.chatMsg.connect(gui.CLICK, clickChatMsg, None)
+        self.chatMsg.connect(gui.KEYDOWN, self.lkey)
+        self.td(self.chatMsg)
+
+
+    def lkey(self, _event):
+        e = _event
+        if e.key == pygame.K_RETURN:
+            if self.chatMsg.value != '':
+                print self.chatMsg.value
+                self.chatMsg.value = ''        
+
 def gotoMission(gotoMap, player1, player2):
     Config.mission = True
     # Setup mixer to avoid sound lag
@@ -374,10 +411,18 @@ def gotoMission(gotoMap, player1, player2):
     screen_width = 1200
     # 64*12
     screen_height = 640
-    screen = pygame.display.set_mode([screen_width,screen_height])
+    screen = pygame.display.set_mode([screen_width, screen_height])
+
+    # GUI Initialization 
+    form = gui.Form()
+    app = gui.App()
+    chatCtrl = ChatControl()
+    c = gui.Container(align = -1, valign = -1)
+    c.add(chatCtrl, 0, 16*32)
+    app.init(c)
 
     # Font
-    font  = pygame.font.Font(None, 36)
+    font  = pygame.font.Font(None, 17)
     font1 = pygame.font.Font(None, 18)
 
     pygame.display.set_caption('Commando Python : Infiltration Zombi')
@@ -442,6 +487,8 @@ def gotoMission(gotoMap, player1, player2):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 gameloop=True
+            else:
+                app.event(event)
 
             # Left mouse click
             if pygame.mouse.get_pressed()[0] == True:
@@ -874,32 +921,32 @@ def gotoMission(gotoMap, player1, player2):
         # Player information
         if displayPlayer == 1:        
             textName = font.render("Codename: " + str(player1.name), True, green)
-            screen.blit(textName, [0, 32*16])
+            screen.blit(textName, [992, 16*2])
 
             textLife = font.render("Life: " + str(player1.life), True, green)
-            screen.blit(textLife, [0, 32*17])
+            screen.blit(textLife, [992, 16*3])
 
             textAmmunition = font.render("Ammunition: " + str(player1.ammunition), True, green)
-            screen.blit(textAmmunition, [0, 32*18])
+            screen.blit(textAmmunition, [992, 16*4])
 
             textScore = font.render("Score: " + str(player1.score), True, green)
-            screen.blit(textScore, [0, 32*19])
+            screen.blit(textScore, [992, 16*5])
 
             textPlayer1MapId = font.render("Map: " + str(player1.mapId), True, green)
             screen.blit(textPlayer1MapId, [992, 0])
 
         if displayPlayer == 2:        
             textName = font.render("Codename : " + str(player2.name), True, green)
-            screen.blit(textName, [0, 32*16])
+            screen.blit(textName, [992, 16*2])
 
             textLife = font.render("Life: " + str(player2.life), True, green)
-            screen.blit(textLife, [0, 32*17])
+            screen.blit(textLife, [992, 16*3])
 
             textAmmunition = font.render("Ammunition: " + str(player2.ammunition), True, green)
-            screen.blit(textAmmunition, [0, 32*18])
+            screen.blit(textAmmunition, [992, 16*4])
 
             textScore = font.render("Score: " + str(player2.score), True, green)
-            screen.blit(textScore, [0, 32*19])
+            screen.blit(textScore, [992, 16*5])
 
             textPlayer2MapId = font.render("Map: " + str(player2.mapId), True, green)
             screen.blit(textPlayer2MapId, [992, 0])
@@ -907,6 +954,9 @@ def gotoMission(gotoMap, player1, player2):
         screen.blit(bar_bottom, [0,480])
         screen.blit(bar_right, [960,0])
         #screen.blit(image_fnscar, [960,10])
+
+        # Display GUI
+        app.paint()
 
         # Display
         pygame.display.flip()
