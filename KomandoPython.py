@@ -63,7 +63,7 @@ def viewMission():
     titleScreenImage = pygame.image.load("images/fs.jpg").convert()
 
     # Font
-    font = pygame.font.Font(None, 36)
+    font = pygame.font.Font( os.path.join('data', 'freesansbold.ttf'), 14)
 
     pygame.display.set_caption('Commando Python : Infiltration Zombi')
 
@@ -124,7 +124,7 @@ def viewCommando():
     titleScreenImage = pygame.image.load("images/fs.jpg").convert()
 
     # Font
-    font = pygame.font.Font(None, 36)
+    font = pygame.font.Font( os.path.join('data', 'freesansbold.ttf'), 14)
 
     pygame.display.set_caption('Komando Python : Zomby Infiltration')
 
@@ -203,7 +203,7 @@ def selectMission():
     titleScreenImage = pygame.image.load("images/worldmap.png").convert()
 
     # Font
-    font = pygame.font.Font(None, 36)
+    font = pygame.font.Font( os.path.join('data', 'freesansbold.ttf'), 14)
 
     pygame.display.set_caption('Commando Python : Infiltration Zombi')
 
@@ -270,7 +270,7 @@ def makeMenu(pos = 0):
     Config.menu.center_at(320, 240)
 
     #Set the menu font (default is the pygame font)
-    Config.menu.set_font(pygame.font.SysFont("Arial", 32))
+    Config.menu.set_font(pygame.font.SysFont("data/freesansbold.ttf", 32))
 
     #Set the highlight color to green (default is red)
     Config.menu.set_highlight_color((255, 255, 0))
@@ -424,8 +424,8 @@ def gotoMission(gotoMap, player1, player2):
     app.init(c)
 
     # Font
-    font  = pygame.font.Font(None, 17)
-    font1 = pygame.font.Font(None, 18)
+    font  = pygame.font.Font(os.path.join('data', 'freesansbold.ttf'), 17)
+    font1 = pygame.font.Font(os.path.join('data', 'freesansbold.ttf'), 18)
 
     pygame.display.set_caption('Commando Python : Infiltration Zombi')
 
@@ -989,7 +989,7 @@ def main():
     titleScreenImage = pygame.image.load("images/fs.jpg").convert()
 
     # Font
-    font = pygame.font.Font(None, 36)
+    font = pygame.font.Font( os.path.join('data', 'freesansbold.ttf'), 14)
 
     pygame.display.set_caption('Commando Python : Infiltration Zombi')
 
