@@ -28,6 +28,8 @@ from NPC import *
 from Zombi import *
 from MapInfo import *
 
+sys.path.insert(0, ".")
+
 from pgu import gui
 
 """
