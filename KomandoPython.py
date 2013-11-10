@@ -21,7 +21,7 @@ from Level import *
 from Way import *
 from array import *
 from Colour import *
-from UserInterface import *
+
 from lib import ezmenu
 from SqliteDB import *
 from NPC import *
@@ -250,15 +250,11 @@ def gameUrl(url):
     webbrowser.open_new_tab(url)
 
 def makeMenu(pos = 0):
-    
     # Fake datas
     player1 = Player("player1")
     player2 = Player("player2")
 
     gotoMap = MapInfo(player1.mapId)
-
-    #print "makeMenu: " + str(gotoMap.mapId)
-
     Config.menu = ezmenu.EzMenu(
         ["Go to the Mission", lambda: gotoMission(gotoMap, player1, player2)],
         ["View Commando", viewCommando],
@@ -266,18 +262,18 @@ def makeMenu(pos = 0):
         ["View Current Mission", viewMission],
         ["View Maps", lambda: gameUrl("./displayWorld.html")],
         ["Quit Game", gameQuit] )
-    
     Config.menu.center_at(320, 240)
 
     #Set the menu font (default is the pygame font)
-    Config.menu.set_font(pygame.font.SysFont("data/freesansbold.ttf", 32))
-
+    Config.menu.set_font(pygame.font.Font("data/freesansbold.ttf", 32))
+    
     #Set the highlight color to green (default is red)
     Config.menu.set_highlight_color((255, 255, 0))
 
     #Set the normal color to white (default is black)
     Config.menu.set_normal_color((255, 255, 255))
     Config.menu.option = pos 
+    
 
 def saveWallMap(mapId, wall_list):
     mapArr = [[0 for col in range(30)] for row in range(15)]
@@ -966,6 +962,34 @@ def gotoMission(gotoMap, player1, player2):
         clock.tick(40)
 
 
+def setCodename(screen, question):  
+
+    textCodename = pygame.font.Font(os.path.join('data', 'freesansbold.ttf'), 14)
+
+    text = ""
+    
+    pygame.display.flip()
+    line1 = textCodename.render("Codename", True, green)
+    while True:
+        screen.fill((0,0,0)) #paint background black
+        line2 = textCodename.render("> " + text, True, green) 
+        screen.blit(line1, (20, 20))
+        screen.blit(line2, (200, 20))
+        pygame.time.wait(50)
+        for event in pygame.event.get():        
+            if event.type == pygame.QUIT:
+                break   
+            elif event.type != pygame.KEYDOWN:
+                continue
+            elif event.key == pygame.K_BACKSPACE:
+                text = text[0:-1]
+            elif event.key == pygame.K_RETURN or event.key == pygame.K_KP_ENTER:
+                return text
+            else:
+                text += event.unicode.encode("ascii")         
+        pygame.display.flip()
+        
+
 #Main script
 def main():
 
@@ -1030,6 +1054,7 @@ def main():
     codename = setCodename(screen, "Codename")
 
     # Make menu
+    
     makeMenu(0)
 
     while Config.menuloop:
@@ -1052,7 +1077,7 @@ def main():
         pygame.display.flip()
 
     # End title screen
-
+    
     titleScreen=font.render("Commando Python : Infiltration Zombi", True, blue)
     titleScreenRect = titleScreen.get_rect()
     screen.fill(black)
@@ -1073,7 +1098,7 @@ def main():
              if event.key == pygame.K_RETURN:
                 waiting = False
                 break
-
+    
     pygame.quit()
 
     return                

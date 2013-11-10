@@ -74,6 +74,7 @@ class Theme:
         dnames.append(os.path.join(os.path.dirname(__file__),"..","..","..","..","share","pgu","themes",name))
         dnames.append(os.path.join(os.path.dirname(__file__),"..","..","..","..","..","share","pgu","themes",name))
         dnames.append(os.path.join(os.path.dirname(__file__),"..","..","share","pgu","themes",name)) 
+        dnames.append(os.path.join("data","themes",name))
         for dname in dnames:
             if os.path.isdir(dname): break
 

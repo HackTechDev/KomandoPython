@@ -1,3 +1,5 @@
 PyInstaller 2.1 : http://www.pyinstaller.org/
 
-$ pyinstaller KomandoPython.py --onefile
+[~/PYTHON/KomandoPython (develop)] ➔ pyinstaller KomandoPython.py --onefile
+[~/PYTHON/KomandoPython (develop)⚡] ➔ cp ./dist/KomandoPython KomandoPython.bin
+[~/PYTHON/KomandoPython (develop)⚡] ➔ ./KomandoPython.bin
