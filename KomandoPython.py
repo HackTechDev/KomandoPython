@@ -974,7 +974,7 @@ def setCodename(screen, question):
         screen.fill((0,0,0)) #paint background black
         line2 = textCodename.render("> " + text, True, green) 
         screen.blit(line1, (20, 20))
-        screen.blit(line2, (200, 20))
+        screen.blit(line2, (100, 20))
         pygame.time.wait(50)
         for event in pygame.event.get():        
             if event.type == pygame.QUIT:
