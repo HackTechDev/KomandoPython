@@ -412,13 +412,14 @@ def gotoMission(gotoMap, player1, player2):
     screen = pygame.display.set_mode([screen_width, screen_height])
 
     # GUI Initialization 
+    """
     form = gui.Form()
     app = gui.App()
     chatCtrl = ChatControl()
     c = gui.Container(align = -1, valign = -1)
     c.add(chatCtrl, 0, 16*32)
     app.init(c)
-
+    """
     # Font
     font  = pygame.font.Font(os.path.join('data', 'freesansbold.ttf'), 17)
     font1 = pygame.font.Font(os.path.join('data', 'freesansbold.ttf'), 18)
@@ -485,9 +486,10 @@ def gotoMission(gotoMap, player1, player2):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 gameloop=True
+            """
             else:
                 app.event(event)
-
+            """
             # Left mouse click
             if pygame.mouse.get_pressed()[0] == True:
                 mousex = pygame.mouse.get_pos()[0]
@@ -950,7 +952,9 @@ def gotoMission(gotoMap, player1, player2):
         #screen.blit(image_fnscar, [960,10])
 
         # Display GUI
+        """
         app.paint()
+        """
 
         # Display
         pygame.display.flip()
