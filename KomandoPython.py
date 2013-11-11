@@ -871,7 +871,6 @@ def gotoMission(gotoMap, player1, player2):
                 else:
                     characPlayer1 = font1.render("", True, blue)
 
-                characPlayer1Recr = characPlayer1.get_rect()
                 screen.blit(characPlayer1, [player1.rect.x, player1.rect.y-10])
                 
 
@@ -883,7 +882,6 @@ def gotoMission(gotoMap, player1, player2):
                 else:
                     characPlayer2 = font1.render("", True, blue)
 
-                characPlayer2Rec = characPlayer2.get_rect()
                 screen.blit(characPlayer2, [player2.rect.x, player2.rect.y-10])
 
 
@@ -896,7 +894,6 @@ def gotoMission(gotoMap, player1, player2):
             else:
                 characPlayer1 = font1.render("", True, blue)
 
-            characPlayer1Recr = characPlayer1.get_rect()
             screen.blit(characPlayer1, [player1.rect.x, player1.rect.y-10])
        
             if displayCharacPlayer2 == True:
@@ -904,7 +901,6 @@ def gotoMission(gotoMap, player1, player2):
             else:
                 characPlayer2 = font1.render("", True, blue)
 
-            characPlayer2Rec = characPlayer2.get_rect()
             screen.blit(characPlayer2, [player2.rect.x, player2.rect.y-10])
 
         # Is a zombiMap
