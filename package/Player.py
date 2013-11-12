@@ -89,6 +89,14 @@ class Player(pygame.sprite.Sprite):
 
     # Find a new position for the player
     def update(self,walls):
+
+        # Fix bug with the PGU
+        if self.change_x > 4: self.change_x = 4
+        elif self.change_x < -4: self.change_x = -4
+
+        if self.change_y > 4: self.change_y = 4
+        elif self.change_y < -4: self.change_y = -4
+
         # Get the old position, in case we need to go back to it
         old_x=self.rect.x
         new_x=old_x+self.change_x
