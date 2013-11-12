@@ -381,8 +381,8 @@ class ChatControl(gui.Table):
 
         self.tr()
         self.chatList = gui.Table()
-        self.box1 = gui.ScrollArea(self.chatList, width=480, height=100, hscrollbar=False)
-        self.td(self.box1)
+        self.box = gui.ScrollArea(self.chatList, width=480, height=100, hscrollbar=False)
+        self.td(self.box)
 
         self.tr()
         self.chatMsg = gui.Input(maxlength=128, width=468, focusable=False)
@@ -390,19 +390,41 @@ class ChatControl(gui.Table):
         self.chatMsg.connect(gui.KEYDOWN, self.lkey)
         self.td(self.chatMsg)
 
+        # Reverse the vertical scrollbar
+        self.tr()
 
+        class Hack(gui.Spacer):
+            def __init__(self, box):
+                super(gui.Spacer, self).__init__()
+                self.box = box
+
+            def resize(self, width=None, height=None):
+                self.box.set_vertical_scroll(65535)
+                return 1, 1
+
+        dirtyHack = Hack(self.box)
+        self.td(dirtyHack)
+        
+        
+        
+    
     def lkey(self, _event):
         e = _event
         if e.key == pygame.K_RETURN:
             if self.chatMsg.value != '':
                 self.addText(self.chatMsg.value)
                 self.chatMsg.value = ''    
+
+
     
 
     def addText(self, text, color=(0, 0, 0)):
-        print text
-        self.chatList.tr()
-        self.chatList.td(gui.Label(str(text), antialias=0, color=color), align=-1)
+        def write(text, color):
+            self.chatList.tr()
+            self.chatList.td(gui.Label(str(text), antialias=0, color=color), align=-1)
+            self.box.resize()
+            
+        write(text, color)     
             
 def gotoMission(gotoMap, player1, player2):
     Config.mission = True
