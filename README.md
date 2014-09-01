@@ -18,4 +18,6 @@ Player2:
 
 Move: ijkl  
 
+Change Player : F1 or F2
 
+Enable chat : F5
